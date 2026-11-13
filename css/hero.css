@@ -1,0 +1,189 @@
+/* ==========================================================================
+   00 HERO: minimal, pale sky, small mono credits, lone camera and chair.
+   ========================================================================== */
+
+.hero {
+  position: relative;
+  background: var(--paper);
+  height: 100vh;
+  height: 100svh;
+  min-height: 560px;
+  overflow: hidden;
+  color: var(--ink);
+}
+
+.hero__sky {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 70% at 50% 108%, var(--sky-bottom) 0%, transparent 60%),
+    linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 46%, var(--sky-bottom) 100%);
+}
+
+.hero__center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: clamp(84px, 17svh, 190px);
+  text-align: center;
+}
+
+.hero__mark {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.1;
+  margin-bottom: clamp(30px, 6.5svh, 72px);
+}
+.hero__mark-dot { fill: var(--red); stroke: none; }
+.is-motion .hero__mark { animation: mark-spin 24s linear infinite; }
+@keyframes mark-spin { to { transform: rotate(360deg); } }
+
+.hero__logo { width: clamp(250px, 30vw, 440px); }
+.hero__logo img { width: 100%; height: auto; }
+
+.hero__line {
+  max-width: 32ch;
+  margin-top: clamp(12px, 2.2svh, 20px);
+  font-size: 15px;
+  line-height: 1.45;
+  color: #2b2a2e;
+}
+
+.hero__meta {
+  width: clamp(250px, 23vw, 330px);
+  margin-top: clamp(20px, 4svh, 40px);
+  color: #2b2a2e;
+}
+.hero__meta-row { display: flex; justify-content: space-between; }
+
+.hero__credits {
+  display: grid;
+  gap: 2px;
+  margin-top: clamp(26px, 6svh, 60px);
+}
+.hero__credits div { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.hero__credits dt { text-align: right; color: var(--grey); }
+.hero__credits dd { text-align: left; }
+
+.hero__rec {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: clamp(26px, 6svh, 56px);
+  padding: 5px 9px;
+  background: var(--ink);
+  color: #f3f3f3;
+  font-size: 10px;
+}
+.rec-dot { width: 6px; height: 6px; border-radius: 50%; background: #ff2a1f; }
+.is-motion .rec-dot { animation: rec 1.2s steps(1) infinite; }
+@keyframes rec { 50% { opacity: 0; } }
+
+.hero__set {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0 auto;
+  width: clamp(300px, 36vw, 540px);
+  overflow: visible;
+}
+.hero__set rect, .hero__set path:not(.set-line):not(.set-thin):not(.set-ground) { fill: var(--ink); }
+.hero__set .set-line { fill: none; stroke: var(--ink); stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
+.hero__set .set-thin { fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linecap: round; }
+.hero__set .set-ground { fill: none; stroke: rgb(0 0 0 / 0.12); stroke-width: 1; }
+
+.hero__cue {
+  position: absolute;
+  z-index: 2;
+  left: var(--gutter);
+  bottom: 18px;
+  color: var(--grey);
+}
+.hero__cue::after {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  margin-left: 10px;
+  vertical-align: middle;
+  background: currentColor;
+}
+
+/* --------------------------------------------------------------------------
+   Marker wipes (bars generated in js/lib/marker.js). Shared by hero + redact.
+   -------------------------------------------------------------------------- */
+.wipe {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  display: none;
+}
+.is-motion .wipe { display: block; }
+.wipe__bar {
+  position: absolute;
+  left: -4%;
+  width: 108%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 760px) {
+  .hero__center { padding-top: clamp(80px, 15svh, 140px); }
+  .hero__mark { margin-bottom: 7svh; }
+  .hero__logo { width: min(80vw, 340px); }
+  .hero__line { font-size: 14px; max-width: 28ch; }
+  .hero__meta { width: min(80vw, 300px); }
+  .hero__credits div { gap: 10px; }
+  .mono { font-size: 10px; }
+  .hero__set { width: 92vw; }
+}
+
+/* Short screens (small phones, short laptop windows): tighter rhythm and a
+   smaller camera and chair so the REC tag never runs into them. */
+@media (max-height: 760px) {
+  .hero__center { padding-top: clamp(58px, 11svh, 110px); }
+  .hero__mark { margin-bottom: 4svh; }
+  .hero__line { margin-top: 1.6svh; }
+  .hero__meta { margin-top: 3svh; }
+  .hero__credits { margin-top: 3.5svh; }
+  .hero__rec { margin-top: 3.5svh; }
+}
+@media (max-height: 760px) and (min-width: 761px) {
+  .hero__set { width: min(26vw, 40svh); }
+}
+
+/* Marker that redacts "RedRiver" in the logo on scroll, leaving "media". */
+.hero__logo { position: relative; }
+.logo-redact {
+  position: absolute;
+  left: -2%;
+  top: -6%;
+  width: 62.6%;
+  height: 70%;
+  display: none;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+.is-motion .logo-redact { display: block; clip-path: inset(0 100% 0 0); }
+
+/* Phone landscape and other very short screens: the hero drops its 560px
+   minimum (so the whole first screen is visible) and keeps only the essentials.
+   The studio overlap in scenes.css follows the same rule. */
+@media (max-height: 520px) {
+  .hero { min-height: 0; }
+  .hero__center { padding-top: 54px; }
+  .hero__mark, .hero__credits { display: none; }
+  .hero__logo { width: min(46vw, 300px); }
+  .hero__line { margin-top: 8px; }
+  .hero__meta { margin-top: 12px; }
+  .hero__rec { margin-top: 12px; }
+  .hero__set { width: min(30vw, 46svh); }
+}

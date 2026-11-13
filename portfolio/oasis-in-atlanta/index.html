@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" data-hosting="paths">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src &#x27;none&#x27;; script-src &#x27;self&#x27; &#x27;sha256-QzOztBBQ2cJRVysvzEiufebY6PSJIcGO/uESLT1Ylk8=&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27; https://fonts.googleapis.com; font-src &#x27;self&#x27; https://fonts.gstatic.com; img-src &#x27;self&#x27; data:; connect-src &#x27;self&#x27;; base-uri &#x27;none&#x27;; object-src &#x27;none&#x27;; frame-src &#x27;none&#x27;; form-action &#x27;none&#x27;">
+  <meta name="referrer" content="no-referrer">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Oasis in Atlanta | RedRiver Creative Media</title>
+  <meta name="description" content="Oasis in Atlanta connects pastor Norman Shands, his son Bob&#x27;s family archive, and the history of faith and school desegregation in Atlanta.">
+  <meta name="theme-color" content="#f2f0eb">
+  <meta property="og:type" content="video.movie">
+  <meta property="og:site_name" content="RedRiver Creative Media">
+  <meta property="og:title" content="Oasis in Atlanta | RedRiver Creative Media">
+  <meta property="og:description" content="Oasis in Atlanta connects pastor Norman Shands, his son Bob&#x27;s family archive, and the history of faith and school desegregation in Atlanta.">
+  <link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <!-- One motion policy with the main page: ?motion=off, the main page's
+       "Reduce motion" choice (rr-motion), or the OS setting stops all motion,
+       page-to-page transitions included. If motion.js does not run, the class
+       comes off again so nothing stays hidden. -->
+  <script>
+    (function () {
+      var d = document.documentElement, still = /[?&]motion=off\b/.test(location.search);
+      try { still = still || localStorage.getItem('rr-motion') === 'off'; } catch (e) {}
+      still = still || !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      d.classList.add(still ? 'no-motion' : 'motion');
+      if (still) ['pageswap', 'pagereveal'].forEach(function (t) {
+        window.addEventListener(t, function (e) { if (e.viewTransition) e.viewTransition.skipTransition(); });
+      });
+      window.addEventListener('load', function () { if (!window.RRmotion) d.classList.remove('motion'); });
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=IBM+Plex+Mono&family=Inter:wght@400;500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap">
+  <script src="../page-start.js"></script>
+  <link rel="stylesheet" href="../common.css">
+  <link rel="stylesheet" href="../buttons.css">
+  <script src="../key-feedback.js" defer></script>
+  <script src="../links.js" defer></script>
+  <script src="../motion.js" defer></script>
+</head>
+<body>
+  <a class="skip-link mono" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"></div>
+  <header class="bar">
+    <a class="bar__brand" data-link="home" href="../../">
+      <span class="wordmark" aria-hidden="true">RedRiver<span class="wordmark__red">media</span></span>
+      <span class="sr-only">RedRiver Creative Media, main site</span>
+    </a>
+    <nav class="mono" aria-label="Blog and portfolio">
+      <a class="link" data-link="blog" href="../../blog/">Blog</a>
+      <a class="link" data-link="portfolio" href="../" aria-current="true">Portfolio</a>
+    </nav>
+    <nav class="bar__right mono" aria-label="Main site">
+      <a class="link" data-link="home" href="../../">Main site</a>
+      <a class="link" data-link="home" href="../../#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <div class="col col--wide">
+      <div class="article__top"><a class="back mono" href="../"><span class="arrow" aria-hidden="true">&larr;</span> All projects</a></div>
+      <article class="film">
+        <figure class="film__poster"><img src="../media/oasis-in-atlanta.webp" width="1066" height="1600" alt="Oasis in Atlanta documentary poster" style="view-transition-name: poster-oasis-in-atlanta"></figure>
+        <div>
+          <p class="film__status mono intro" style="--i:0">Released</p>
+          <h1 class="film__t rise"><span class="w"><span style="--i:0">Oasis</span></span> <span class="w"><span style="--i:1">in</span></span> <span class="w"><span style="--i:2">Atlanta</span></span></h1>
+          <p class="film__line intro" style="--i:1">A pastor, his son Bob, and a family archive of Atlanta&#x27;s civil rights years.</p>
+          <figure class="still still--lead intro" style="--i:2"><img src="../media/stills/oasis-in-atlanta/01-bob-shands.webp" width="990" height="720" alt="Bob Shands sits in a warmly lit room during his interview." decoding="async"><figcaption class="still__cap">Bob Shands interviewed about his father and the archive.</figcaption></figure>
+          <section class="film__sec" aria-labelledby="about-t" data-reveal>
+            <h2 class="film__h mono" id="about-t">About the film</h2>
+            <div class="film__about">
+            <p>Pastor Norman Shands&#x27; story sits where his family&#x27;s memory meets the civil rights movement. Oasis in Atlanta draws on his recorded recollections and the archive preserved by his son, Bob, to explore Christian faith, racial integration and Atlanta&#x27;s response to school desegregation.</p>
+            <p>The film places Norman&#x27;s testimony and Bob&#x27;s memories beside photographs, newspapers and historical footage. Its chapters trace the ministers&#x27; manifesto and the work of OASIS, Organizations Assisting Schools in September. Tamera Nealy adds her contemporary perspective, while Bob frames his father&#x27;s work and his own search for the records as a story of faith in action.</p>
+            </div>
+          </section>
+          <section class="film__sec" aria-labelledby="stills-t" data-reveal>
+            <h2 class="film__h mono" id="stills-t">From the film</h2>
+            <div class="stills">
+            <figure class="still"><img src="../media/stills/oasis-in-atlanta/02-norman-shands.webp" width="990" height="720" alt="Norman Shands appears in an older recorded interview." loading="lazy" decoding="async"><figcaption class="still__cap">Norman Shands in the recorded interview used in the film.</figcaption></figure>
+            <figure class="still"><img src="../media/stills/oasis-in-atlanta/03-tamera-nealy.webp" width="990" height="720" alt="Tamera Nealy gestures during her interview." loading="lazy" decoding="async"><figcaption class="still__cap">Tamera Nealy offers a contemporary perspective.</figcaption></figure>
+            <figure class="still"><img src="../media/stills/oasis-in-atlanta/04-family-archive.webp" width="990" height="720" alt="Hands examine labeled boxes in an open metal card-file drawer." loading="lazy" decoding="async"><figcaption class="still__cap">Exploring the family archive.</figcaption></figure>
+            <figure class="still"><img src="../media/stills/oasis-in-atlanta/05-oasis-handbook.webp" width="990" height="720" alt="Hands hold an OASIS booklet titled Background: Atlanta." loading="lazy" decoding="async"><figcaption class="still__cap">The OASIS handbook for reporters covering Atlanta school desegregation.</figcaption></figure>
+            </div>
+          </section>
+          <section class="film__sec" aria-labelledby="prod-t" data-reveal>
+            <h2 class="film__h mono" id="prod-t">Production</h2>
+            <div class="film__about">
+            <p>Recorded family testimony anchors this wider historical documentary. Photographs, saved papers and archive footage connect those personal recollections with public events.</p>
+            </div>
+            <dl class="credits">
+              <div><dt class="mono">RedRiver</dt><dd>Production, direction, camera, edit</dd></div>
+              <div><dt class="mono">Co-credited with</dt><dd>Oasis Films and Paris Campaigns</dd></div>
+            </dl>
+          </section>
+          <a class="next" href="../sacrificing-lincoln/" data-reveal>
+            <span class="next__label mono">Next project</span>
+            <span class="next__t"><span>Sacrificing Lincoln</span><span class="arrow" aria-hidden="true">&rarr;</span></span>
+          </a>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <div class="col col--wide">
+      <a class="bar__brand" data-link="home" href="../../"><span class="wordmark" aria-hidden="true">RedRiver<span class="wordmark__red">media</span></span><span class="sr-only">RedRiver Creative Media, main site</span></a>
+      <p class="foot__place mono">Est. 2011 / The Woodlands, Texas</p>
+      <nav class="mono" aria-label="Footer">
+        <a class="link" data-link="home" href="../../">Main site</a>
+        <a class="link" data-link="blog" href="../../blog/">Blog</a>
+        <a class="link" data-link="home" href="../../#contact">Contact</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

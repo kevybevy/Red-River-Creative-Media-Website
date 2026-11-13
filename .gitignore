@@ -1,0 +1,16 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+node_modules/
+.env
+.env.*
+!.env.example
+
+# Local review material and unrelated production work
+/.council/
+/.claude/
+/:memory:.ses
+/button-proposals/
+/content-updates/
+/film-analysis/
+/portfolio-handoff/

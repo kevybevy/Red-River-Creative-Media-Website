@@ -1,0 +1,489 @@
+/* ==========================================================================
+   The maximalist middle. One block per scene, in page order.
+   Default styles = the calm, readable end state (no JS / reduced motion).
+   `.is-motion` styles = the pinned, animated versions.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Scene handoffs (motion only). Each overlapping scene is pulled up by one
+   screen so its pin starts on the exact frame the previous pin ends: no
+   unpinned travel, no dead scroll. It stays hidden until its pin starts.
+   -------------------------------------------------------------------------- */
+.is-motion .is-overlap { margin-top: -100vh; margin-top: -100svh; }
+.is-motion .redact.is-overlap { margin-top: calc(-1 * max(100vh, 560px)); margin-top: calc(-1 * max(100svh, 560px)); }
+@media (max-height: 520px) { .is-motion .redact.is-overlap { margin-top: -100vh; margin-top: -100svh; } }
+/* Hidden with opacity, not visibility, so links and fields inside stay in the
+   Tab order; focusing one scrolls its scene into view (collage.js, contact.js). */
+.is-motion .is-handoff:not(.is-live) { opacity: 0; pointer-events: none; }
+
+/* --------------------------------------------------------------------------
+   01 REDACT (reference 1: blackout poetry)
+   -------------------------------------------------------------------------- */
+.redact {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  padding: 110px var(--gutter);
+  background: var(--paper);
+  overflow: hidden;
+}
+.is-motion .redact { height: 100vh; height: 100svh; padding-block: 0; }
+
+.redact__page {
+  position: relative;
+  width: min(640px, 100%);
+  padding: clamp(28px, 4.6vw, 60px) clamp(22px, 4.6vw, 66px);
+  background: #fbfaf7;
+  box-shadow: 0 1px 0 rgb(0 0 0 / 0.04), 0 40px 70px -40px rgb(0 0 0 / 0.35);
+  font-family: var(--font-display);
+  font-size: clamp(15px, 1.3vw, 18.5px);
+  line-height: 1.62;
+  transform-origin: 50% 50%;
+}
+.redact__page p + p { margin-top: 0.85em; text-indent: 1.5em; }
+.redact__running { display: flex; justify-content: space-between; margin-bottom: 2.2em; color: var(--grey); font-size: 10px; }
+.redact__folio { margin-top: 2.4em; text-align: center; color: var(--grey); font-size: 10px; }
+
+/* Redacted phrases: a marker SVG grows across each line (--p). */
+.x {
+  --p: 0%;
+  padding: 0.05em 0.14em;
+  margin: 0 -0.14em;
+  background-image: var(--marker);
+  background-repeat: no-repeat;
+  background-size: var(--p) 100%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.k--red { color: var(--red); }
+
+/* Without motion the text stays readable; kept phrases get a red underline. */
+html:not(.is-motion) .k { box-shadow: inset 0 -0.1em 0 var(--red); }
+
+.redact__scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 30vh;
+  z-index: 15;
+  display: none;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0) 0%, rgb(255 255 255 / 0.85) 70%, #fff 96%, var(--ink) 96%, var(--ink) 97%, rgb(0 0 0 / 0) 97%);
+  transform: translateY(-110%);
+}
+.is-motion .redact__scan { display: block; }
+
+/* --------------------------------------------------------------------------
+   02 COLLAGE (reference 3: degraded photocopy)
+   -------------------------------------------------------------------------- */
+.collage { position: relative; background: var(--paper); overflow: hidden; overflow: clip; }
+
+.collage__track {
+  position: relative;
+  display: grid;
+  gap: 90px;
+  padding: 110px var(--gutter);
+}
+.is-motion .collage { height: 100vh; height: 100svh; }
+.is-motion .collage__track {
+  display: flex;
+  align-items: center;
+  gap: clamp(150px, 15vw, 240px);
+  width: max-content;
+  height: 100%;
+  padding: 0 12vw 0 6vw;
+  will-change: transform;
+}
+
+.collage__lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  display: none;
+}
+.is-motion .collage__lines { display: block; }
+.collage__lines path, .collage__lines line, .collage__lines circle {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.collage__lines .heavy { stroke-width: 3; }
+
+.collage__intro { position: relative; }
+.is-motion .collage__intro { width: 74vw; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 12svh; }
+.collage__intro h2 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(64px, 12vw, 200px);
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+  margin-top: 10px;
+}
+.collage__lede { max-width: 36ch; margin-top: 18px; font-size: 15px; color: #2b2a2e; }
+
+/* A printed film index replaces the decorative river photo. */
+.collage__index { position: relative; width: min(100%, 760px); margin-bottom: 30px; padding: 14px 0; border-block: 1px solid var(--ink); overflow: hidden; }
+.collage__index-top { display: flex; justify-content: space-between; gap: 12px; }
+.collage__index-number { display: block; font-family: var(--font-display); font-size: clamp(120px, 22vw, 300px); font-weight: 400; line-height: .94; letter-spacing: -.07em; }
+.collage__index-films { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 24px; margin-top: 12px; }
+.is-motion .collage__index { position: absolute; left: 0; top: 8svh; width: 54vw; height: 43svh; margin: 0; display: flex; flex-direction: column; justify-content: space-between; --print: 100%; clip-path: inset(0 0 calc(100% - var(--print)) 0); }
+.is-motion .collage__index-number { font-size: clamp(80px, 29svh, 330px); line-height: .85; }
+.is-motion .collage__index-films { font-size: 10px; }
+.collage__rule { display: none; }
+.is-motion .collage__rule { display: block; position: absolute; left: 60vw; top: 18svh; width: 3px; height: 30svh; background: var(--ink); }
+
+/* Photocopy texture: speckle + scan streaks, multiplied over the image. */
+.photocopy {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.35;
+  background-image:
+    repeating-linear-gradient(180deg, rgb(0 0 0 / 0) 0 3px, rgb(0 0 0 / 0.07) 3px 4px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.3' numOctaves='1' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 3 -1.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.is-motion .photocopy { opacity: 0.95; }
+
+.plate { position: relative; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr); gap: 32px; align-items: end; }
+.is-motion .plate { display: flex; flex: none; gap: 32px; align-items: flex-end; }
+.is-motion .plate--low { transform: translateY(7svh); }
+
+.plate__fig { position: relative; overflow: hidden; background: #ddd; }
+.plate__fig img { width: 100%; height: auto; }
+.is-motion .plate__fig { height: 64svh; aspect-ratio: var(--ar, 0.72); }
+.is-motion .plate__fig img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.9) brightness(1.12); }
+.is-motion .plate--feature .plate__fig { height: 76svh; }
+
+.plate__copy { width: min(320px, 100%); padding-bottom: 6px; }
+/* A fixed column in the reel. A percentage width there resolves against the
+   plate's unwrapped text, which left a gap after each plate as wide as its
+   longest credit line. */
+.is-motion .plate__copy { flex: 0 0 320px; width: 320px; }
+/* Paper knockout: the reel's drawn lines pass behind titles and captions. */
+.is-motion .plate__copy { background: var(--paper); box-shadow: 0 0 0 12px var(--paper); }
+.plate__folio { color: var(--grey); }
+.plate h3 {
+  margin-top: 10px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(30px, 3.2vw, 52px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+.plate h3.is-red { color: var(--red); }
+.plate__sub { margin-top: 6px; font-family: var(--font-display); font-style: italic; font-size: 18px; }
+.plate__caption { margin-top: 14px; font-size: 14.5px; color: #2b2a2e; }
+.plate__credits { margin-top: 16px; display: grid; gap: 6px; color: #3a3936; font-size: 11px; }
+.plate__credits li { padding-left: 12px; position: relative; }
+.plate__credits li::before { content: ""; position: absolute; left: 0; top: 0.75em; width: 6px; height: 1px; background: currentColor; }
+.plate__link { display: inline-block; margin-top: 16px; color: var(--red); text-decoration: none; border-bottom: 1px solid currentColor; }
+
+.collage__end { color: var(--grey); }
+.is-motion .collage__end { align-self: center; writing-mode: vertical-rl; }
+
+/* Previous / Next for the reel: phones only, animated version only. */
+.reel-nav { display: none; }
+.reel-nav__btn {
+  padding: 8px 14px 7px;
+  border: 1px solid rgb(17 16 20 / 0.5);
+  border-radius: 999px;
+  background: rgb(242 240 235 / 0.92);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  line-height: 1.2;
+  color: var(--ink);
+  cursor: pointer;
+}
+.reel-nav__btn:hover { border-color: var(--ink); }
+.reel-nav__btn[aria-disabled="true"] { opacity: 0.35; cursor: default; }
+.reel-nav__count { min-width: 6.5em; text-align: center; color: var(--grey); }
+
+/* --------------------------------------------------------------------------
+   03 TYPEWRITER (references 2 and 6: glitched typewriter)
+   -------------------------------------------------------------------------- */
+.type {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  padding: 110px var(--gutter);
+  background: #fbfbf9;
+  overflow: hidden;
+}
+.is-motion .type { height: 100vh; height: 100svh; padding-block: 0; }
+
+.type__noise { position: absolute; inset: 0; z-index: 1; pointer-events: none; display: none; }
+.is-motion .type__noise { display: block; }
+.type__noise span { position: absolute; white-space: nowrap; font-family: var(--font-type); color: var(--ink); }
+.type__noise .blk { display: inline-block; height: 0.55em; background: var(--ink); vertical-align: middle; }
+
+.type__sheet { position: relative; z-index: 2; width: min(1120px, 100%); }
+.type__list { display: grid; gap: clamp(8px, 1.5svh, 18px); margin-top: 22px; }
+.type__list li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 0 28px;
+  align-items: baseline;
+  padding-top: clamp(8px, 1.3svh, 14px);
+}
+.type__list li::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 1px;
+  background: rgb(0 0 0 / 0.18);
+  transform-origin: left;
+  transform: scaleX(var(--rule, 1));
+}
+.type__n { color: var(--grey); }
+.type__t { font-family: var(--font-type); font-size: clamp(21px, 2.8vw, 42px); line-height: 1.06; letter-spacing: -0.01em; }
+.type__d { font-family: var(--font-type); font-size: 13px; line-height: 1.4; color: #2a2a2a; }
+/* Knockout: the sheet's paper shows behind the words so noise never crosses them. */
+.is-motion .type__t .ch { background: #fbfbf9; }
+.is-motion .type__d { justify-self: start; background: #fbfbf9; box-shadow: 0 0 0 4px #fbfbf9; }
+
+/* --------------------------------------------------------------------------
+   04 PEOPLE (references 4 and 5: stipple, particle dissolve)
+   -------------------------------------------------------------------------- */
+.people { position: relative; background: var(--paper); overflow: hidden; }
+.people__canvas { display: none; }
+.person h3 {
+  margin: 8px 0 16px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(52px, 7vw, 116px);
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+}
+.person p:last-child { max-width: 36ch; font-size: 15px; color: #2b2a2e; }
+.person__photo { width: 100%; height: auto; margin-bottom: 22px; filter: grayscale(1); }
+
+/* Static layout: each photo sits directly above its own bio, two columns */
+html:not(.is-motion) .people {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 48px 5vw;
+  padding: 110px var(--gutter);
+}
+
+/* Motion layout: pinned canvas, copy beside each portrait */
+.is-motion .people { height: 100vh; height: 100svh; }
+.is-motion .person__photo { display: none; }
+.is-motion .people__canvas { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
+.is-motion .person { position: absolute; top: 0; bottom: 0; height: fit-content; margin: auto 0; width: min(360px, 32vw); }
+.is-motion .person--a { left: 61vw; }
+.is-motion .person--b { left: 9vw; }
+
+/* --------------------------------------------------------------------------
+   05 SCRAWL (reference 7: layered pencil and ink) + erase to white
+   -------------------------------------------------------------------------- */
+.scrawl {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 100svh;
+  padding: 110px var(--gutter);
+  background: #f7f6f2;
+  overflow: hidden;
+}
+.is-motion .scrawl { height: 100vh; height: 100svh; padding-block: 0; }
+
+.scrawl__svg { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
+.is-motion .scrawl__svg { display: block; }
+.scrawl__svg .pencil { fill: none; stroke: #5c5b58; stroke-width: 0.9; stroke-linecap: round; opacity: 0.55; }
+.scrawl__svg .ink { fill: none; stroke: #0c0c0e; stroke-width: 1.5; stroke-linecap: round; }
+.scrawl__svg .drop { fill: #0b0b14; }
+.scrawl__svg text { font-family: var(--font-display); fill: #6d6a64; }
+
+.scrawl__steps { position: relative; z-index: 2; width: min(1120px, 100%); margin: 0 auto; }
+.scrawl__steps ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4vw; margin-top: 26px; }
+.scrawl__steps li { container-type: inline-size; }
+.hand {
+  display: block;
+  width: fit-content;
+  font-family: var(--font-hand);
+  /* "prepare and film" is about 6.9em wide. Sized from its own column
+     (container query units) so each title stays on one line. */
+  font-size: clamp(28px, 3.4vw, 46px);
+  font-size: min(46px, 13.8cqi);
+  line-height: 1.15;
+  background: #f7f6f2;
+  box-shadow: 0 0 0 6px #f7f6f2;
+  /* Keep the paper inside the animated clip, clear of the decorative strokes. */
+  padding: 2px 8px;
+  margin: -2px -8px;
+}
+.scrawl__steps .kicker { width: fit-content; background: #f7f6f2; box-shadow: 0 0 0 5px #f7f6f2; }
+.scrawl__steps p {
+  margin-top: 14px;
+  padding: 6px 8px;
+  max-width: 34ch;
+  background: #f7f6f2;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.scrawl__erase {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: none;
+  background: var(--white);
+  clip-path: circle(0% at 50% 50%);
+}
+.is-motion .scrawl__erase { display: block; }
+
+/* --------------------------------------------------------------------------
+   Mobile
+   -------------------------------------------------------------------------- */
+/* Short phones: tighter services list so it fits without much scaling. */
+@media (max-width: 760px) {
+  .redact__page { font-size: 14px; line-height: 1.55; }
+
+  .plate { grid-template-columns: 1fr; }
+  .is-motion .collage__track { gap: 14vw; padding: 0 12vw 0 8vw; }
+  .is-motion .collage__end { display: none; }
+  .is-motion .collage__intro { width: 88vw; padding-bottom: 14svh; }
+  .is-motion .collage__index { width: 76vw; top: 10svh; height: 38svh; }
+  .is-motion .collage__rule { left: 70vw; top: 34svh; height: 16svh; }
+  .is-motion .plate { flex-direction: column; align-items: flex-start; gap: 16px; width: min(82vw, 360px); }
+  .is-motion .plate__fig { height: 46svh; }
+  .is-motion .plate--feature .plate__fig { height: 50svh; }
+  .is-motion .plate--low { transform: none; }
+  .plate__copy, .is-motion .plate__copy { flex: none; width: 100%; }
+  .plate h3 { font-size: 28px; }
+  .plate__caption { font-size: 13px; margin-top: 8px; }
+  .plate__credits { margin-top: 10px; gap: 4px; font-size: 12px; }
+
+  .type__list li { grid-template-columns: 26px minmax(0, 1fr); }
+  .type__d { grid-column: 2; font-size: 13px; line-height: 1.35; margin-top: 3px; }
+  .type__t { font-size: 19px; }
+
+  html:not(.is-motion) .people { grid-template-columns: 1fr; }
+  /* Clear of the HUD row at the bottom, including during the bio's entrance. */
+  .is-motion .person { width: auto; left: 20px !important; right: 20px; top: auto; bottom: calc(6svh + 22px); margin: 0; }
+  .person h3 { font-size: 52px; margin: 4px 0 8px; }
+  .person p:last-child { font-size: 13.5px; }
+
+  .scrawl__steps ol { grid-template-columns: 1fr; gap: 14px; }
+  .hand { font-size: 32px; }
+  .scrawl__steps p { margin-top: 4px; font-size: 13px; line-height: 1.5; }
+}
+
+/* Phones, both orientations: the reel shows one film per screen and stops on
+   each one (js/scenes/collage.js), with Previous / Next below. */
+@media (max-width: 760px), (max-height: 520px) {
+  /* Keep the active reel above the following pin-spacer so its controls receive taps. */
+  .is-motion.hold-work .collage { z-index: 2; }
+  .is-motion .collage__track { gap: 0; padding: 0 0 0 6vw; }
+  .is-motion .collage__end { display: none; }
+  .is-motion .plate { flex: none; width: 100vw; padding-inline: max(20px, calc(50vw - 180px)); }
+  .is-motion .reel-nav { display: flex; position: absolute; left: 0; right: 0; bottom: 10px; z-index: 5; justify-content: center; align-items: center; gap: 14px; }
+}
+/* Phone landscape: poster beside the copy, both inside the short screen. */
+@media (max-height: 520px) and (min-width: 480px) and (orientation: landscape) {
+  .is-motion .plate { flex-direction: row; align-items: center; justify-content: center; gap: 22px; padding-inline: max(20px, calc(50vw - 330px)); }
+  .is-motion .plate--low { transform: none; }
+  .is-motion .plate__fig, .is-motion .plate--feature .plate__fig { height: calc(100svh - 112px); }
+  .is-motion .plate__copy { flex: 1 1 auto; width: auto; max-width: 400px; }
+  .is-motion .plate h3 { font-size: 26px; }
+  .is-motion .plate__caption { font-size: 13px; margin-top: 6px; }
+  .is-motion .plate__credits { margin-top: 8px; gap: 3px; font-size: 11px; }
+  .is-motion .plate__link { margin-top: 10px; }
+}
+
+@media (max-width: 760px) and (max-height: 720px) {
+  .type__list { gap: 2px; margin-top: 8px; }
+  .type__list li { padding-top: 5px; }
+  .type__t { font-size: 15px; }
+  .type__d { font-size: 12.5px; line-height: 1.28; margin-top: 2px; }
+}
+
+/* Match the canvas's short-landscape portrait slot without changing type. */
+@media (min-width: 480px) and (max-width: 760px) and (max-height: 520px) and (orientation: landscape) {
+  .is-motion .person { width: 54%; right: auto; }
+}
+
+/* Small phones (iPhone SE size): drop the kicker (the HUD already names the
+   section) and narrow the number column so descriptions stay at 12.5px unscaled. */
+@media (max-width: 400px) and (max-height: 620px) {
+  .type__sheet .kicker { display: none; }
+  .type__list { margin-top: 0; }
+  .type__list li { grid-template-columns: 20px minmax(0, 1fr); }
+  .type__d { line-height: 1.24; }
+}
+
+/* Narrow phone landscape: the three steps in two columns (the long first step
+   on its own), so all of them fit between the Menu chip and the bottom. */
+@media (max-width: 760px) and (max-height: 520px) {
+  .scrawl__steps ol { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 26px; margin-top: 8px; }
+  .scrawl__steps li:first-child { grid-row: span 2; }
+  .hand { font-size: 28px; }
+  .scrawl__steps p { padding: 4px 6px; line-height: 1.45; }
+}
+
+/* Very short screens (phone landscape): a compact services sheet so the
+   descriptions stay at a readable size instead of being scaled down. */
+@media (max-height: 520px) {
+  .type__sheet .kicker { display: none; }
+  .type__list { gap: 0; margin-top: 0; }
+  .type__list li { padding-top: 3px; grid-template-columns: 22px minmax(0, 0.62fr) minmax(0, 1.38fr); gap: 0 14px; }
+  /* Narrow landscape phones also match the phone rule, which stacks the
+     description under the title; put it back in its own column. */
+  .type__d { grid-column: 3; margin-top: 0; }
+  /* Sit below the Menu chip; the HUD steps aside while the list holds (base.css). */
+  .is-motion .type__sheet { margin-top: 26px; }
+  .type__t { font-size: 15px; }
+  .type__d { font-size: 11.5px; line-height: 1.25; }
+}
+
+/* Small portrait phones: fit the Process reading block without shrinking type
+   or requiring a pan to reveal the last paragraph. */
+@media (max-width: 360px) and (min-height: 521px) and (max-height: 620px) {
+  .scrawl__steps ol { margin-top: 10px; gap: 6px; }
+  .scrawl__steps p { padding-block: 3px; }
+}
+
+/* The full header returns on an upward menu jump; clear it as well as the chip. */
+@media (max-width: 760px) and (max-height: 520px) {
+  .is-motion .type__sheet { margin-top: 50px; }
+}
+
+/* Small portrait Services must also clear the full header after an upward jump. */
+@media (max-width: 400px) and (min-height: 521px) and (max-height: 620px) {
+  .is-motion .type__sheet { margin-top: 32px; }
+  .type__list { gap: 0; }
+  .type__list li { padding-top: 1px; }
+}
+
+/* Keep complete poster artwork in the short-screen row. The copy can flex. */
+@media (max-height: 520px) {
+  .is-motion .plate__fig { flex-shrink: 0; }
+  .is-motion .plate__fig img { object-fit: contain; }
+  .is-motion .plate__copy { min-width: 0; }
+}
+
+/* A wider paper exclusion around the short first heading separates it from ink. */
+.scrawl__steps li:first-child .hand { padding-inline: 20px; margin-inline: -20px; }
+
+/* Short portrait keeps service titles above their descriptions. The original
+   short-screen typography and fitting behavior remain unchanged. */
+@media (max-width: 479px) and (max-height: 520px) {
+  .type__list li { grid-template-columns: 20px minmax(0, 1fr); }
+  .type__d { grid-column: 2; margin-top: 2px; }
+  .is-motion .type__sheet { margin-top: 54px; }
+}
+
+@media (max-height: 520px) { .is-motion .collage__index { top: 16svh; height: 29svh; } .is-motion .collage__index-number { font-size: 22svh; } .is-motion .collage__index-films { display: none; } }

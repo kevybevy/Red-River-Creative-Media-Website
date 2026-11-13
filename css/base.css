@@ -1,0 +1,334 @@
+/* ==========================================================================
+   RedRiver Creative Media: base tokens, reset, global layers
+   Brand colors come from the logo files and the existing RedRiver site.
+   ========================================================================== */
+
+:root {
+  /* Brand */
+  --red: #900000;            /* "media" red, sampled from the logo PNG */
+  --red-deep: #6e1d22;       /* accent red on the existing site */
+  --ink: #111014;
+  --paper: #f2f0eb;          /* printed-matter off white for the middle */
+  --white: #ffffff;
+  --rule-strong: rgb(17 16 20 / 0.5);
+  --on-ink: #ffffff;
+  --grey: #5f5b56;           /* small text: 6.4:1 on paper, 5:1 on the hero sky */
+  --grey-soft: #a9a6a1;      /* decoration only, never text */
+
+  /* Hero sky (image 8 reference) */
+  --sky-top: #c8c8cc;
+  --sky-mid: #dededf;
+  --sky-bottom: #f1f1f0;
+
+  /* Type */
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --font-type: "Courier Prime", "Courier New", monospace;
+  --font-hand: "Cedarville Cursive", "Snell Roundhand", cursive;
+
+  --gutter: clamp(16px, 4vw, 48px);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Driven by JS while scrolling */
+  --grain: 0.07;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img, svg, canvas { display: block; max-width: 100%; }
+h1, h2, h3, p, ol, ul, dl, dd, figure { margin: 0; padding: 0; }
+ol, ul { list-style: none; }
+a { color: inherit; }
+button, input, textarea { font: inherit; color: inherit; }
+
+:focus-visible { outline: 1.5px solid var(--red); outline-offset: 3px; }
+/* Sections take focus after a nav jump so screen readers land in the right place. */
+main > section[tabindex="-1"]:focus, main section[tabindex="-1"]:focus { outline: none; }
+/* ...except after a keyboard-activated nav link (header.js adds the class). */
+main section[tabindex="-1"].is-focus-ring:focus { outline: 2px solid var(--red); outline-offset: -8px; }
+/* Bare tabindex=-1 targets (the sent message) take focus without a ring. */
+[tabindex="-1"]:focus:not(:focus-visible) { outline: none; }
+
+.skip-link {
+  position: fixed;
+  left: 12px;
+  top: 12px;
+  z-index: 100;
+  padding: 8px 12px;
+  background: var(--ink);
+  color: var(--white);
+  text-decoration: none;
+  transform: translateY(-180%);
+}
+.skip-link:focus { transform: none; }
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.6;
+}
+
+.kicker { color: var(--grey); font-weight: 400; }
+
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+/* Split text helpers (js/lib/util.js) */
+.w { display: inline-block; white-space: nowrap; }
+.ch { display: inline-block; }
+
+/* --------------------------------------------------------------------------
+   Header: reads as a normal site. States (set by js/header.js):
+   top     = at the very top, links only
+   shown   = scrolling up, full bar
+   compact = scrolling down, only the Menu chip stays
+   gone    = the blank contact page; nothing, and nothing focusable
+   -------------------------------------------------------------------------- */
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  --pad-x: var(--gutter);
+  padding: 18px var(--pad-x);
+  transition: background-color 0.3s, opacity 0.4s, visibility 0.4s;
+}
+.site-header__brand { display: block; text-decoration: none; }
+/* Wordmark: Bree Serif has one weight, so no bold or italic (and none faked). */
+.wordmark {
+  display: block;
+  font-family: "Bree Serif", Georgia, serif;
+  font-weight: 400;
+  font-style: normal;
+  font-synthesis: none;
+  font-size: 19px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: var(--ink);
+}
+.wordmark__red { color: var(--red); }
+/* Blog | Portfolio tabs, top left. At the very top the wordmark is out of the
+   bar (the hero shows the logo), so the tabs sit at the left edge. */
+.site-header__tabs { display: flex; }
+.site-header__tabs a {
+  padding: 6px 12px 5px;
+  border: 1px solid rgb(17 16 20 / 0.5);
+  background: rgb(242 240 235 / 0.92);
+  text-decoration: none;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.site-header__tabs a + a { margin-left: -1px; }
+.site-header__tabs a:hover { color: var(--red); border-color: var(--ink); position: relative; }
+.site-header__brand,
+.site-header__tabs,
+.site-header__nav { transition: opacity 0.35s, transform 0.5s var(--ease), visibility 0.35s; }
+.site-header__nav { display: flex; gap: clamp(14px, 2.2vw, 30px); margin-left: auto; }
+.site-header__nav a { text-decoration: none; position: relative; padding: 4px 0; }
+.site-header__nav a::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: currentColor; transform: scaleX(0); transform-origin: right;
+  transition: transform 0.4s var(--ease);
+}
+.site-header__nav a:hover::after, .site-header__nav a:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+.site-header__nav .is-cta { color: var(--red); }
+
+.site-header__menu {
+  display: none;
+  margin-left: auto;
+  padding: 7px 13px 6px;
+  border: 1px solid rgb(17 16 20 / 0.5);
+  border-radius: 999px;
+  background: rgb(242 240 235 / 0.92);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  line-height: 1.2;
+  cursor: pointer;
+}
+.site-header__menu:hover { border-color: var(--ink); }
+
+.site-header[data-state="top"] .site-header__brand { display: none; }
+.site-header[data-state="shown"] { background: rgb(242 240 235 / 0.88); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.site-header[data-state="compact"] { pointer-events: none; }
+.site-header[data-state="compact"] .site-header__brand,
+.site-header[data-state="compact"] .site-header__tabs,
+.site-header[data-state="compact"] .site-header__nav { opacity: 0; visibility: hidden; transform: translateY(-14px); }
+.site-header[data-state="compact"] .site-header__menu { display: inline-block; pointer-events: auto; }
+/* Compact and contact states: the chip is pinned to the right edge, so the
+   hidden wordmark, tabs and links (which keep their width while they fade)
+   can never push it off a narrow screen. Same spot as in the full bar. */
+.site-header[data-state="compact"] .site-header__menu,
+.site-header[data-state="gone"] .site-header__menu { position: absolute; right: var(--pad-x); top: 50%; transform: translateY(-50%); }
+/* Contact page: the bar is gone, but the Menu chip stays in the tab order and
+   appears while it has keyboard focus or its menu is open. */
+.site-header[data-state="gone"] { pointer-events: none; }
+.site-header[data-state="gone"] .site-header__brand,
+.site-header[data-state="gone"] .site-header__tabs,
+.site-header[data-state="gone"] .site-header__nav { opacity: 0; visibility: hidden; }
+.site-header[data-state="gone"] .site-header__menu { display: inline-block; opacity: 0; }
+.site-header[data-state="gone"] .site-header__menu:focus-visible,
+.site-header[data-state="gone"] .site-header__menu[aria-expanded="true"] { opacity: 1; pointer-events: auto; }
+
+/* Menu panel: every section, reachable from anywhere on the page */
+.site-menu {
+  position: fixed;
+  z-index: 60;
+  top: 12px;
+  right: 12px;
+  width: min(330px, calc(100vw - 24px));
+  /* Never taller than the screen: on short screens the panel scrolls inside
+     itself (touch, wheel, and focus), without moving the page behind it. */
+  max-height: calc(100vh - 24px);
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px 20px 14px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.1), 0 30px 60px -30px rgb(0 0 0 / 0.5);
+}
+.site-menu[hidden] { display: none; }
+.site-menu__list a {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 5px 0;
+  font-family: var(--font-display);
+  font-size: 27px;
+  line-height: 1.1;
+  text-decoration: none;
+}
+.site-menu__list .mono { color: var(--grey); }
+.site-menu__list a:hover, .site-menu__list a:focus-visible { color: var(--red); }
+.site-menu__list .is-cta { color: var(--red); }
+/* Current section (overlay.js sets aria-current from the scroll position). */
+.site-header__nav a[aria-current]::after { transform: scaleX(1); }
+.site-menu__list a[aria-current] { color: var(--red); }
+.site-menu__pages { display: flex; gap: 22px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgb(17 16 20 / 0.15); }
+.site-menu__pages a { font-family: var(--font-display); font-style: italic; font-size: 22px; line-height: 1.2; text-decoration: none; padding: 2px 0; }
+.site-menu__pages a:hover, .site-menu__pages a:focus-visible { color: var(--red); }
+.site-menu__motion { display: block; margin-top: 18px; padding: 6px 0; border: 0; background: none; color: var(--ink); cursor: pointer; }
+.site-menu__motion[aria-pressed="true"] { color: var(--red); }
+.no-gsap .site-menu__motion { display: none; }
+/* Hero parts the intro animates in stay hidden until it starts (see index.html). */
+.pre-intro .hero__sky, .pre-intro .hero__mark, .pre-intro .hero__logo img, .pre-intro .hero__line,
+.pre-intro .set-camera, .pre-intro .set-chair, .pre-intro .hero__rec, .pre-intro .hero__cue { opacity: 0; }
+.site-menu__close { margin-top: 10px; padding: 6px 0; border: 0; background: none; color: var(--grey); cursor: pointer; }
+.site-menu__note { color: var(--grey); text-transform: none; letter-spacing: 0; }
+/* Short screens (phone landscape): sections in two columns, buttons on one
+   row, so the whole menu fits without scrolling at 320px tall. */
+@media (max-height: 520px) {
+  .site-menu { width: min(500px, calc(100vw - 24px)); padding: 10px 18px 8px; }
+  .site-menu__list { display: grid; grid-template-rows: repeat(4, auto); grid-auto-flow: column; column-gap: 24px; }
+  .site-menu__list a { font-size: 22px; padding: 4px 0; }
+  .site-menu__pages { margin-top: 8px; padding-top: 6px; }
+  .site-menu__pages a { font-size: 19px; }
+  .site-menu__motion, .site-menu__close { display: inline-block; margin-top: 6px; }
+  .site-menu__motion { margin-right: 22px; }
+}
+
+@media (max-width: 760px) {
+  .site-header { --pad-x: 16px; padding: 14px var(--pad-x); }
+  .wordmark { font-size: 17px; }
+  .site-header__nav { display: none; }
+  .site-header__menu { display: inline-block; }
+  /* Phones: with the wordmark showing there is no room for the tabs; they are in the Menu. */
+  .site-header[data-state="shown"] .site-header__tabs { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Film grain: one fixed layer, opacity driven by scroll (--grain)
+   -------------------------------------------------------------------------- */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 40;
+  pointer-events: none;
+  opacity: var(--grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.4 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  mix-blend-mode: multiply;
+}
+.is-motion .grain { animation: grain 0.6s steps(6) infinite; }
+.is-motion.grain-off .grain { animation-play-state: paused; }
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-7%, 4%); }
+  40% { transform: translate(5%, -9%); }
+  60% { transform: translate(-3%, 8%); }
+  80% { transform: translate(9%, 2%); }
+  100% { transform: translate(-5%, -4%); }
+}
+
+/* --------------------------------------------------------------------------
+   Debris: fixed production-slate fragments that multiply as the page gets
+   louder. Filled by js/overlay.js. Hidden in the hero and on contact.
+   -------------------------------------------------------------------------- */
+.debris {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0;
+  color: var(--ink);
+}
+.debris__field { position: absolute; inset: 0; }
+.frag { position: absolute; white-space: nowrap; opacity: 0; }
+.frag--text { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+.frag--type { font-family: var(--font-type); font-size: 13px; }
+.frag--bar { height: 9px; background: var(--ink); }
+.frag--rule { height: 1px; background: var(--ink); }
+.frag--vrule { width: 2px; background: var(--ink); }
+.frag--dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red); }
+.frag--crop { width: 18px; height: 18px; border: 1px solid var(--ink); border-width: 1px 0 0 1px; }
+.frag--reg { width: 22px; height: 22px; border: 1px solid var(--ink); border-radius: 50%; }
+.frag--reg::before, .frag--reg::after { content: ""; position: absolute; background: var(--ink); }
+.frag--reg::before { left: 50%; top: -6px; bottom: -6px; width: 1px; }
+.frag--reg::after { top: 50%; left: -6px; right: -6px; height: 1px; }
+
+.hud { position: absolute; bottom: 16px; font-size: 10px; mix-blend-mode: multiply; }
+.hud--tc { left: var(--gutter); }
+.hud--label { right: var(--gutter); }
+
+/* No JS or reduced motion: no overlays */
+html:not(.is-motion) .debris { display: none; }
+
+/* Debris that would cover the copy of the scene on screen steps out (js/overlay.js). */
+.hold-studio .frag[data-hide~="studio"],
+.hold-work .frag[data-hide~="work"],
+.hold-services .frag[data-hide~="services"],
+.hold-people .frag[data-hide~="people"],
+.hold-process .frag[data-hide~="process"] { visibility: hidden; }
+/* The HUD is decoration and never sits on copy. A scene taller than the
+   screen pans (Studio, Process): the HUD steps aside for it. */
+.hold-studio:has(#studio.is-tall) .hud,
+.hold-process:has(#process.is-tall) .hud { visibility: hidden; }
+/* Phones: the Work reel's Previous/Next row takes the HUD's place. */
+@media (max-width: 760px), (max-height: 520px) { .hold-work .hud, .hold-studio .hud { visibility: hidden; } }
+/* Short screens (phone landscape): no room for a HUD row under the copy. */
+@media (max-height: 520px) { .hud { display: none; } }

@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en" data-hosting="paths">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src &#x27;none&#x27;; script-src &#x27;self&#x27; &#x27;sha256-9uDw/1EzfTQ5pUukZSSz5g1AfNDvA/4lntBd1Cligm0=&#x27; &#x27;sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d&#x27; &#x27;sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27; https://fonts.googleapis.com; font-src &#x27;self&#x27; https://fonts.gstatic.com; img-src &#x27;self&#x27; data:; connect-src &#x27;self&#x27;; base-uri &#x27;none&#x27;; object-src &#x27;none&#x27;; frame-src &#x27;none&#x27;; form-action &#x27;none&#x27;">
+  <meta name="referrer" content="no-referrer">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RedRiver Creative Media</title>
+  <meta name="description" content="RedRiver Creative Media is a documentary and video production studio in The Woodlands, Texas. Documentaries, family legacy films, and commissioned work.">
+  <meta name="theme-color" content="#e9e9ea">
+  <link rel="icon" href="assets/logo/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/logo/apple-touch-icon.png">
+  <!-- Link previews. og:image must be an absolute URL once the site has its domain (README, Not done yet). -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="RedRiver Creative Media">
+  <meta property="og:title" content="RedRiver Creative Media">
+  <meta property="og:description" content="Documentary and video production studio in The Woodlands, Texas. Documentaries, family legacy films, and commissioned work.">
+  <meta property="og:image" content="assets/share-card.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="RedRiver Creative Media logo: Media for good and media for all">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Fonts. Playfair Display and Inter come from the existing RedRiver site.
+       IBM Plex Mono = small UI text. Courier Prime = typewriter (matches the
+       Sacrificing Lincoln poster credit line). Cedarville Cursive = scrawl.
+       Bree Serif = the header wordmark (one weight, 400).
+       Only the weights the CSS uses. Cedarville is cut down to the letters of
+       the three Process words (talk, prepare and film, edit and deliver); if
+       those words change, update the text= list (tools/worker/sanity.mjs
+       checks that every letter is covered). -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=IBM+Plex+Mono&family=Inter:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,800;0,900;1,400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&text=adefiklmnprtv%20&display=swap">
+
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/scenes.css">
+  <link rel="stylesheet" href="css/contact.css">
+  <link rel="stylesheet" href="css/buttons.css">
+  <script src="js/key-feedback.js" defer></script>
+  <!-- Hide the hero's animated parts until the intro starts, so the first paint
+       is not the finished hero followed by a blink (js/scenes/hero.js removes it).
+       Not used when motion is off; the timeout is a safety net. -->
+  <script>
+    (function () {
+      var d = document.documentElement, still = /[?&]motion=off/.test(location.search);
+      d.classList.add('js');
+      try { still = still || localStorage.getItem('rr-motion') === 'off'; } catch (e) {}
+      if (!still && matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+        d.classList.add('pre-intro');
+        setTimeout(function () { d.classList.remove('pre-intro'); }, 4000);
+      }
+    })();
+  </script>
+  <script src="js/links.js" defer></script>
+  <link rel="modulepreload" href="js/main.js">
+  <link rel="modulepreload" href="js/header.js">
+  <link rel="modulepreload" href="js/overlay.js">
+  <link rel="modulepreload" href="js/lib/util.js">
+  <link rel="modulepreload" href="js/lib/marker.js">
+  <link rel="modulepreload" href="js/scenes/hero.js">
+  <link rel="modulepreload" href="js/scenes/redact.js">
+  <link rel="modulepreload" href="js/scenes/collage.js">
+  <link rel="modulepreload" href="js/scenes/typewriter.js">
+  <link rel="modulepreload" href="js/scenes/people.js">
+  <link rel="modulepreload" href="js/scenes/scrawl.js">
+  <link rel="modulepreload" href="js/scenes/contact.js">
+  <!-- Without JavaScript the form cannot send yet (no delivery service), so hide the button. -->
+  <noscript><style>.contact__send { display: none !important; }</style></noscript>
+</head>
+<body>
+  <a class="skip-link mono" href="#contact">Skip to contact</a>
+
+  <!-- Global layers ------------------------------------------------------ -->
+  <div class="grain" aria-hidden="true"></div>
+  <div class="debris" aria-hidden="true">
+    <div class="debris__field"></div>
+    <p class="hud hud--tc mono">TC <span data-hud-tc>01:00:00:00</span></p>
+    <p class="hud hud--label mono" data-hud-label>00 Intro</p>
+  </div>
+
+  <header class="site-header" data-state="top">
+    <a class="site-header__brand" href="#top" aria-label="RedRiver Creative Media, back to top">
+      <span class="wordmark" aria-hidden="true">RedRiver<span class="wordmark__red">media</span></span>
+    </a>
+    <!-- Blog and portfolio: separate pages (blog/, portfolio/), ready for their own
+         subdomains (js/links.js). -->
+    <nav class="site-header__tabs mono" aria-label="Blog and portfolio">
+      <a data-link="blog" href="blog/">Blog</a><a data-link="portfolio" href="portfolio/">Portfolio</a>
+    </nav>
+    <nav class="site-header__nav mono" aria-label="Primary">
+      <a href="#studio">Studio</a>
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#people">People</a>
+      <a href="#process">Process</a>
+      <a class="is-cta" href="#contact">Contact</a>
+    </nav>
+    <button class="site-header__menu mono" type="button" aria-expanded="false" aria-controls="site-menu">Menu</button>
+  </header>
+
+  <div class="site-menu" id="site-menu" hidden>
+    <nav aria-label="Sections">
+      <ol class="site-menu__list">
+        <li><a href="#top"><span class="mono">00</span>Intro</a></li>
+        <li><a href="#studio"><span class="mono">01</span>Studio</a></li>
+        <li><a href="#work"><span class="mono">02</span>Work</a></li>
+        <li><a href="#services"><span class="mono">03</span>Services</a></li>
+        <li><a href="#people"><span class="mono">04</span>People</a></li>
+        <li><a href="#process"><span class="mono">05</span>Process</a></li>
+        <li><a class="is-cta" href="#contact"><span class="mono">06</span>Contact</a></li>
+      </ol>
+    </nav>
+    <nav aria-label="Blog and portfolio">
+      <ul class="site-menu__pages">
+        <li><a data-link="blog" href="blog/">Blog</a></li>
+        <li><a data-link="portfolio" href="portfolio/">Portfolio</a></li>
+      </ul>
+    </nav>
+    <button class="site-menu__motion mono" type="button" aria-pressed="false">Reduce motion<span class="site-menu__note"></span></button>
+    <button class="site-menu__close mono" type="button">Close</button>
+  </div>
+  <p class="sr-only" id="motion-status" role="status" aria-live="polite"></p>
+
+  <nav class="section-keys" aria-label="Section and film navigation" hidden>
+    <button type="button" data-direction="-1" aria-label="Previous section" aria-disabled="true">
+      <svg viewBox="0 0 11 7" aria-hidden="true"><path d="m1 6 4.5-4.5L10 6"/></svg><span class="key-grip" aria-hidden="true"></span>
+    </button>
+    <button type="button" data-direction="1" aria-label="Next section">
+      <span class="key-grip" aria-hidden="true"></span><svg viewBox="0 0 11 7" aria-hidden="true"><path d="m1 1 4.5 4.5L10 1"/></svg>
+    </button>
+  </nav>
+  <p class="sr-only" id="section-key-status" role="status" aria-live="polite"></p>
+
+  <main>
+
+    <!-- 00 HERO: minimal ------------------------------------------------- -->
+    <section class="hero" id="top" data-label="00 Intro" aria-label="Introduction" tabindex="-1">
+      <div class="hero__sky" aria-hidden="true"></div>
+
+      <div class="hero__center">
+        <svg class="hero__mark" viewBox="0 0 40 40" aria-hidden="true">
+          <circle cx="20" cy="20" r="8.5" />
+          <path d="M20 2v10M20 28v10M2 20h10M28 20h10" />
+          <circle class="hero__mark-dot" cx="20" cy="20" r="1.6" />
+        </svg>
+
+        <h1 class="hero__logo">
+          <img src="assets/logo/logo-dark.webp" width="1600" height="248"
+               alt="RedRiver Creative Media. Media for good and media for all.">
+        </h1>
+
+        <p class="hero__line">Documentaries, family legacy films, and commissioned work.</p>
+
+        <div class="hero__meta mono">
+          <p data-split>Documentary and video production</p>
+          <p class="hero__meta-row"><span data-split>Independent studio</span><span data-split>Since 2011</span></p>
+        </div>
+
+        <dl class="hero__credits mono">
+          <div><dt data-split>Creative direction</dt><dd data-split>Janelle Batts</dd></div>
+          <div><dt data-split>Production</dt><dd data-split>Dru Batts</dd></div>
+          <div><dt data-split>Based in</dt><dd data-split>The Woodlands, Texas</dd></div>
+        </dl>
+
+        <p class="hero__rec mono"><span class="rec-dot" aria-hidden="true"></span>REC <span data-timecode>01:00:00:00</span></p>
+      </div>
+
+      <!-- A lone camera and director's chair, in the spirit of the desk and chair reference -->
+      <svg class="hero__set" viewBox="0 0 600 300" aria-hidden="true">
+        <g class="set-camera">
+          <path class="set-line" d="M231 160 L168 300 M231 160 L294 300 M231 160 L236 300" />
+          <path class="set-thin" d="M197 240 L231 236 L266 240 M231 160 V236" />
+          <path class="set-thin" d="M218 150 L150 170" />
+          <rect x="216" y="142" width="30" height="16" rx="2" />
+          <rect x="196" y="98" width="84" height="46" rx="3" />
+          <path class="set-line" d="M210 98 V84 H262 V98" />
+          <rect x="226" y="73" width="30" height="8" rx="3" />
+          <rect x="280" y="106" width="30" height="30" />
+          <path d="M310 100 L336 90 V152 L310 142 Z" />
+          <rect x="172" y="92" width="20" height="16" rx="1" />
+          <path class="set-thin" d="M192 100 H198" />
+        </g>
+        <g class="set-chair">
+          <path class="set-line" d="M380 172 V236 M446 172 V236" />
+          <rect x="377" y="174" width="72" height="24" />
+          <path class="set-line" d="M366 214 H460" />
+          <path class="set-line" d="M370 236 H456" />
+          <path class="set-line" d="M376 236 L452 300 M450 236 L374 300" />
+          <path class="set-thin" d="M376 278 H450" />
+        </g>
+        <path class="set-ground" d="M0 299.5 H600" />
+      </svg>
+
+      <p class="hero__cue mono" aria-hidden="true">Scroll</p>
+      <div class="wipe wipe--out" aria-hidden="true"></div>
+    </section>
+
+    <!-- 01 REDACTED PAGE: who we are ------------------------------------- -->
+    <section class="redact" id="studio" data-label="01 Studio" aria-labelledby="redact-title" tabindex="-1">
+      <div class="wipe wipe--in" aria-hidden="true"></div>
+      <article class="redact__page">
+        <header class="redact__running mono" aria-hidden="true">
+          <span>RedRiver Creative Media</span><span>11</span>
+        </header>
+        <h2 id="redact-title" class="sr-only">About the studio</h2>
+        <!-- .x = gets redacted. .k = stays visible. Edit freely. -->
+        <p><span class="x">RedRiver Creative Media is an independent documentary production company based in The Woodlands, Texas. We are Dru and Janelle, husband and wife, and we have worked together since 2011.</span> <span class="k">We started as reporters.</span> <span class="x">The work began as writing on local issues and investigative stories in Oklahoma and Texas, long before any of it was filmed.</span> <span class="k">The reporting came first.</span> <span class="x">The films followed from that work.</span></p>
+        <p><span class="x">We make documentaries for public release and private family archives, along with commissioned films for organizations and private clients. The work has taken us across Oklahoma, Kansas and Arkansas.</span> <span class="k">Some lives</span> <span class="x">leave behind photographs, letters, a voice on an old recording, and the people who still remember. A family legacy film keeps them in one place, because a life like that</span> <span class="k">should not go unrecorded.</span></p>
+        <p><span class="x">The two of us lead every project. Footage, transcripts and finished films stay private to the family unless the family says otherwise. There is no minimum project size, and the promise is the one on our logo:</span> <span class="k">Media for good,</span> <span class="x">at an honest scope, from a single afternoon of interviews to a multi-year documentary,</span> <span class="k k--red">and media for all.</span></p>
+        <footer class="redact__folio mono" aria-hidden="true">Est. 2011 / The Woodlands, Texas</footer>
+      </article>
+      <div class="redact__scan" aria-hidden="true"></div>
+    </section>
+
+    <!-- 02 PHOTOCOPY COLLAGE: the work ----------------------------------- -->
+    <section class="collage" id="work" data-label="02 Work" aria-labelledby="work-title" tabindex="-1">
+      <div class="collage__track">
+        <svg class="collage__lines" viewBox="0 0 5000 1000" preserveAspectRatio="none" aria-hidden="true"></svg>
+
+        <div class="collage__intro">
+          <div class="collage__index" aria-hidden="true">
+            <div class="collage__index-top mono"><span>RedRiver / Film index</span><span>01 : 04</span></div>
+            <span class="collage__index-number">02</span>
+            <div class="collage__index-films mono"><span>Saving Clayton</span><span>Trans in Oklahoma</span><span>Sacrificing Lincoln</span><span>Oasis in Atlanta</span></div>
+          </div>
+          <span class="collage__rule" aria-hidden="true"></span>
+          <p class="kicker mono">02 / The work</p>
+          <h2 id="work-title">The work</h2>
+          <p class="collage__lede">Documentaries for public release, from an award winner to a film in production.</p>
+        </div>
+
+        <article class="plate">
+          <figure class="plate__fig">
+            <img src="assets/films/saving-clayton.webp" width="1206" height="1571" alt="Saving Clayton documentary poster" loading="lazy">
+            <span class="photocopy"></span>
+          </figure>
+          <div class="plate__copy">
+            <p class="mono plate__folio">Plate 01 / 2023 / Award winner</p>
+            <h3>Saving Clayton</h3>
+            <p class="plate__caption">An Oklahoma family's grief becomes a fight to be heard.</p>
+            <ul class="plate__credits mono">
+              <li>Best Feature Documentary and finalist for Top Film of the Festival, Will Rogers Motion Picture Festival, 2023</li>
+              <li>Official Selection, Circle Cinema Film Festival, 2024</li>
+              <li>RedRiver: production, direction, camera</li>
+              <li>Lead editor Miles Rahimi. In collaboration with Project Forty Six.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="plate plate--low">
+          <figure class="plate__fig">
+            <img src="assets/films/trans-oklahoma.webp" width="1169" height="1600" alt="Trans Oklahoma documentary poster" loading="lazy">
+            <span class="photocopy"></span>
+          </figure>
+          <div class="plate__copy">
+            <p class="mono plate__folio">Plate 02 / Released</p>
+            <h3>Trans Oklahoma</h3>
+            <p class="plate__sub">Dark Sides of the Rainbow</p>
+            <p class="plate__caption">Personal accounts of transition, detransition, family relationships and Christian faith.</p>
+            <ul class="plate__credits mono"><li>Director Janelle Batts</li><li>Director of photography Kevin Batts</li><li>A RedRiver Creative Media production</li></ul>
+          </div>
+        </article>
+
+        <article class="plate">
+          <figure class="plate__fig">
+            <img src="assets/films/oasis-in-atlanta.webp" width="1066" height="1600" alt="Oasis in Atlanta documentary poster" loading="lazy">
+            <span class="photocopy"></span>
+          </figure>
+          <div class="plate__copy">
+            <p class="mono plate__folio">Plate 03 / Released</p>
+            <h3>Oasis in Atlanta</h3>
+            <p class="plate__caption">A pastor, his son, and a family archive of Atlanta's civil rights years.</p>
+            <ul class="plate__credits mono"><li>RedRiver: production, direction, camera, edit</li><li>Co-credited with Oasis Films and Paris Campaigns</li></ul>
+          </div>
+        </article>
+
+        <article class="plate plate--feature">
+          <figure class="plate__fig">
+            <img src="assets/films/sacrificing-lincoln.webp" width="1066" height="1600" alt="Sacrificing Lincoln poster with a child silhouetted in a doorway, red title lettering, reporting attribution to Katy Smith, and film credits" loading="lazy">
+            <span class="photocopy"></span>
+          </figure>
+          <div class="plate__copy">
+            <p class="mono plate__folio">Plate 04 / In production</p>
+            <h3 class="is-red">Sacrificing Lincoln</h3>
+            <p class="plate__caption">A family's separation. A journalist's investigation. Questions of accountability in child welfare.</p>
+            <ul class="plate__credits mono"><li>RedRiver: production, camera, edit</li><li>Directors Kevin Batts and Katy Smith</li><li>Story producer Janelle Batts</li></ul>
+          </div>
+        </article>
+
+        <div class="collage__end mono" aria-hidden="true">End of reel</div>
+      </div>
+      <!-- Phones: step the reel film by film (js/scenes/collage.js). Hidden elsewhere. -->
+      <div class="reel-nav mono" role="group" aria-label="Films">
+        <button class="reel-nav__btn" type="button" data-step="-1"><span aria-hidden="true">&larr; </span>Previous<span class="sr-only"> film</span></button>
+        <span class="reel-nav__count" aria-hidden="true">4 films</span>
+        <button class="reel-nav__btn" type="button" data-step="1">Next<span class="sr-only"> film</span><span aria-hidden="true"> &rarr;</span></button>
+      </div>
+    </section>
+
+    <!-- 03 TYPEWRITER GLITCH: services ----------------------------------- -->
+    <section class="type" id="services" data-label="03 Services" aria-labelledby="type-title" tabindex="-1">
+      <div class="type__noise" aria-hidden="true"></div>
+      <div class="type__sheet">
+        <p class="kicker mono">03 / What we make</p>
+        <h2 id="type-title" class="sr-only">Services</h2>
+        <ol class="type__list">
+          <li><span class="type__n mono">01</span><span class="type__t" data-split>Original documentaries</span><span class="type__d">A finished documentary for public release, with the master and the shorter edits your release needs.</span></li>
+          <li><span class="type__n mono">02</span><span class="type__t" data-split>Family legacy films</span><span class="type__d">A private film of one life: the voice, the photographs, and the history, kept in a form your family can hold onto.</span></li>
+          <li><span class="type__n mono">03</span><span class="type__t" data-split>Commissioned and branded films</span><span class="type__d">A film made for your audience and the place it will play, with shorter cuts when you need them.</span></li>
+          <li><span class="type__n mono">04</span><span class="type__t" data-split>Courses</span><span class="type__d">Edited lesson videos with titles and captions, ready to upload to your course platform.</span></li>
+          <li><span class="type__n mono">05</span><span class="type__t" data-split>Podcasts</span><span class="type__d">Finished audio or video episodes, one at a time or a season recorded in batches, ready to publish.</span></li>
+          <li><span class="type__n mono">06</span><span class="type__t" data-split>YouTube and social video</span><span class="type__d">Horizontal or vertical video for YouTube and social, as a single release or a planned batch.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- 04 PARTICLE PORTRAITS: the people -------------------------------- -->
+    <section class="people" id="people" data-label="04 People" aria-labelledby="people-title" tabindex="-1">
+      <canvas class="people__canvas" aria-hidden="true"></canvas>
+      <h2 id="people-title" class="sr-only">The people</h2>
+      <article class="person person--a">
+        <img class="person__photo" src="assets/people/janelle.webp" alt="Portrait of Janelle Batts" width="900" height="900" loading="lazy">
+        <p class="kicker mono">Creative direction / Editorial</p>
+        <h3>Janelle</h3>
+        <p>Janelle Batts prepares interview subjects, leads creative direction, and leads the edit with Dru.</p>
+      </article>
+      <article class="person person--b">
+        <img class="person__photo" src="assets/people/dru.webp" alt="Portrait of Dru Batts" width="900" height="900" loading="lazy">
+        <p class="kicker mono">Production / Logistics</p>
+        <h3>Dru</h3>
+        <p>Dru Batts, credited on films as Kevin Batts, served ten years in the military, including two overseas tours, before moving from investigative writing into production. He runs shooting and logistics, and shares the edit with Janelle.</p>
+      </article>
+    </section>
+
+    <!-- 05 SCRAWL: how it works, then the erase to white ----------------- -->
+    <section class="scrawl" id="process" data-label="05 Process" aria-labelledby="scrawl-title" tabindex="-1">
+      <svg class="scrawl__svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+      <div class="scrawl__steps">
+        <h2 id="scrawl-title" class="kicker mono">05 / How it works</h2>
+        <ol>
+          <li><span class="hand">talk</span><p>We hear the story and look at the calendar. Then we come back with an honest scope and a number. Nothing is owed after the conversation. There is no minimum project size: a single afternoon of interviews is a project, and so is a multi-year documentary.</p></li>
+          <li><span class="hand">prepare and film</span><p>Janelle prepares the interview subjects and leads creative direction. Dru plans logistics and runs the shoot.</p></li>
+          <li><span class="hand">edit and deliver</span><p>Dru and Janelle lead the edit and deliver the versions named in the project scope.</p></li>
+        </ol>
+      </div>
+      <div class="scrawl__erase" aria-hidden="true"></div>
+    </section>
+
+    <!-- 06 CONTACT: blank page ------------------------------------------- -->
+    <section class="contact" id="contact" data-label="06 Contact" aria-labelledby="contact-title" tabindex="-1">
+      <div class="contact__inner">
+        <h2 id="contact-title" class="contact__title">contact us</h2>
+        <!-- Not connected to any email service yet. See js/scenes/contact.js.
+             Markup starts open; contact.js switches it to the blank "idle" stage.
+             Without JavaScript, Send is hidden and native submission is blocked. -->
+        <form class="contact__form" method="post" data-stage="typing" data-ready="true" novalidate>
+          <span class="contact__cursor" aria-hidden="true"></span>
+          <div class="contact__field contact__field--email">
+            <label for="c-email">email</label>
+            <input id="c-email" name="email" type="email" autocomplete="email" inputmode="email" spellcheck="false" required>
+            <p class="contact__error" id="c-email-error" aria-live="polite"></p>
+          </div>
+          <div class="contact__field contact__field--message">
+            <label for="c-message">message</label>
+            <textarea id="c-message" name="message" rows="1" required></textarea>
+          </div>
+          <div class="contact__trap" aria-hidden="true">
+            <label for="c-company">company</label>
+            <input id="c-company" name="company" type="text" tabindex="-1" autocomplete="off">
+          </div>
+          <button class="contact__send" type="submit">send</button>
+          <p class="contact__status" id="c-status" role="status" aria-live="polite"></p>
+          <noscript><p class="contact__noscript mono">This form needs JavaScript to send a message.</p></noscript>
+        </form>
+        <p class="contact__hint mono" aria-hidden="true"><span class="hint--touch">tap to write</span><span class="hint--keys">type to write</span></p>
+        <nav class="contact__pages mono" aria-label="Explore more">
+          <a data-link="blog" href="blog/">Blog</a>
+          <a data-link="portfolio" href="portfolio/">Portfolio</a>
+        </nav>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
