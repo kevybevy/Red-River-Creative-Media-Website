@@ -162,6 +162,10 @@
   .contact__field--message, .contact__send,
   .contact__form[data-ready="true"]:not([data-stage="sent"]) .contact__send { transition: none; }
 }
+/* The same when motion is reduced on the page itself: the menu's "Reduce motion"
+   choice or a ?motion=off link (.is-still, set in js/main.js). */
+.is-still .contact__field--message, .is-still .contact__send,
+.is-still .contact__form[data-ready="true"]:not([data-stage="sent"]) .contact__send { transition: none; }
 .contact__form[data-stage="sent"] .contact__send { display: none; }
 .contact__form[data-stage="sent"] .contact__status { margin-top: 0; }
 

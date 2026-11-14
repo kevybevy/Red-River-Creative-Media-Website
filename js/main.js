@@ -253,6 +253,7 @@ if (!window.gsap || !window.ScrollTrigger) {
   // Animation library failed to load: the page stays static and readable.
   root.classList.remove('pre-intro');
   root.classList.add('no-gsap');
+  root.classList.toggle('is-still', queryOff() || motionOff());
   contact.build();
   header.buildStatic();
   console.warn('GSAP did not load. Showing the static page.');
@@ -270,6 +271,8 @@ if (!window.gsap || !window.ScrollTrigger) {
       // ?motion=off previews the reduced-motion version without changing OS settings;
       // the menu's "Reduce motion" button stores the same choice for this visitor.
       const forceStill = queryOff() || motionOff();
+      // Motion reduced on the page itself (not by the OS): CSS transitions follow it too.
+      root.classList.toggle('is-still', forceStill);
       if (!(ctx.conditions.motion && !forceStill)) root.classList.remove('pre-intro');
       // compact: phones in either orientation (narrow, or short like phone landscape).
       // Pins are shorter there and the Work reel stops on each film.
