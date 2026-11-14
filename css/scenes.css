@@ -279,6 +279,9 @@ html:not(.is-motion) .people {
 /* Motion layout: pinned canvas, copy beside each portrait */
 .is-motion .people { height: 100vh; height: 100svh; }
 .is-motion .person__photo { display: none; }
+/* A particle portrait that could not be made (photo failed to load or to sample):
+   show the ordinary photo with the bio instead. Set by js/scenes/people.js. */
+.is-motion .person.is-photo .person__photo { display: block; width: auto; max-width: 100%; height: min(42svh, 360px); margin-bottom: 18px; }
 .is-motion .people__canvas { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }
 .is-motion .person { position: absolute; top: 0; bottom: 0; height: fit-content; margin: auto 0; width: min(360px, 32vw); }
 .is-motion .person--a { left: 61vw; }
