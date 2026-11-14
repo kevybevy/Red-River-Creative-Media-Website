@@ -113,7 +113,8 @@ for (const [name, w, h] of [['phone', 390, 844], ['landscape', 844, 390], ['smal
   { const { ctx, page } = await open(NEW + '/?motion=off', { wait: 1500 }); r = await dur(page); check('?motion=off: Send and message transitions are off', r.still && zero(r.send) && zero(r.field), JSON.stringify(r)); await ctx.close(); }
   { const { ctx, page } = await open(NEW + '/', { storage: 'off', wait: 1500 }); r = await dur(page); check('Stored "Reduce motion" choice: transitions are off', r.still && zero(r.send) && zero(r.field), JSON.stringify(r)); await ctx.close(); }
   { const { ctx, page } = await open(OLD + '/?motion=off', { wait: 1500 }); r = await dur(page); console.log(`INFO  original site with ?motion=off: send transition ${r.send} (non-zero = the reported inconsistency)`); await ctx.close(); }
-  { const { ctx, page } = await open(NEW + '/', { wait: 6000 });
+  // Phone size: the Menu chip is always shown there. On desktop it is hidden at the top of the page.
+  { const { ctx, page } = await open(NEW + '/', { w: 390, h: 844, wait: 6000 });
     r = await dur(page); check('Motion on: transitions unchanged', !r.still && !zero(r.send) && !zero(r.field), JSON.stringify(r));
     await page.click('.site-header__menu'); await sleep(600); await page.click('.site-menu__motion'); await sleep(1200);
     r = await dur(page); check('Menu "Reduce motion" pressed: transitions turn off', r.still && zero(r.send), JSON.stringify(r));
