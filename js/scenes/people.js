@@ -28,12 +28,14 @@ const CONFIG = {
 const section = document.querySelector('.people');
 const canvas = section.querySelector('.people__canvas');
 const ctx = canvas.getContext('2d');
+const people = [...section.querySelectorAll('.person')];
+// Per person: { pts, trig } once the photo is sampled, null until then or if it failed.
 let portraits = [null, null];
 let W = 0, H = 0, dpr = 1, layout = [];
 let progress = 0;
 let portraitTimeline = null;
-let enabled = false;
-let images = null;
+// Per person: a promise for the decoded photo. Cleared on failure so a rebuild retries.
+const images = [];
 
 /** Load and decode off the main thread, so drawing it later does not decode inline. */
 function loadImage(src) {
@@ -117,6 +119,22 @@ async function sample(img, count, seed, tone) {
   return out.subarray(0, n * 4);
 }
 
+/** The scatter and blow-away angles depend only on a particle's random value,
+ *  so they are worked out once here, not for every particle on every frame.
+ *  Kept at full precision: the drawn positions are exactly what they were. */
+function angles(pts) {
+  const n = pts.length / 4;
+  const out = new Float64Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    const q = pts[i * 4 + 3];
+    const ang = q * 44.8;
+    out[i * 3] = Math.cos(ang);
+    out[i * 3 + 1] = Math.sin(ang * 1.7);
+    out[i * 3 + 2] = Math.sin(q * 91.7);
+  }
+  return out;
+}
+
 function resize() {
   dpr = Math.min(window.devicePixelRatio || 1, 2);
   W = section.clientWidth;
@@ -145,8 +163,9 @@ function draw() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, W, H);
   ctx.fillStyle = CONFIG.ink;
-  portraits.forEach((pts, k) => {
-    if (!pts) return;
+  portraits.forEach((portrait, k) => {
+    if (!portrait) return;
+    const { pts, trig } = portrait;
     const ph = CONFIG.phases[k];
     const L = layout[k];
     const a = clamp((progress - ph.assemble[0]) / (ph.assemble[1] - ph.assemble[0]));
@@ -169,11 +188,10 @@ function draw() {
 
       const alpha = ta * (1 - td);
       if (alpha < 0.03) continue;
-      const ang = q * 44.8;
-      const sx = Math.cos(ang) * (0.5 + q) * L.size * 0.9;
-      const sy = Math.sin(ang * 1.7) * (0.4 + q) * L.size * 0.7;
+      const sx = trig[i * 3] * (0.5 + q) * L.size * 0.9;
+      const sy = trig[i * 3 + 1] * (0.4 + q) * L.size * 0.7;
       const bx = ph.dir * (0.3 + q * 1.4) * L.size * 1.2;
-      const by = (Math.sin(q * 91.7) * 0.5 - 0.2) * L.size * 0.6;
+      const by = (trig[i * 3 + 2] * 0.5 - 0.2) * L.size * 0.6;
       // A little scroll-linked shimmer instead of a time-based wobble.
       const wob = Math.sin(progress * 60 + q * 60) * 0.6;
 
@@ -187,28 +205,39 @@ function draw() {
   ctx.globalAlpha = 1;
 }
 
-export function build() {}
-
-export function animate({ motion, small, compact }) {
+export function animate({ motion, compact }) {
   if (!motion) return;
-  enabled = true;
+  let alive = true;
   resize();
 
   // Load and sample the photos only in the animated version, and only once
   // the visitor reaches Services (about two scenes ahead), not at boot.
-  const count = small ? CONFIG.particles.mobile : CONFIG.particles.desktop;
-  const prepare = () => {
-    images ??= Promise.all(CONFIG.sources.map(loadImage)).catch(() => []);
-    images.then(async (imgs) => {
-      if (!enabled || !imgs.length) return;
-      const out = [];
-      for (let i = 0; i < imgs.length; i++) {
-        out.push(await sample(imgs[i], count, 17 + i, CONFIG.tone[i]));
-        if (!enabled) return;
-      }
-      portraits = out;
-      draw();
+  // Phones in either orientation get the lighter count: a landscape phone is
+  // wider than 760px but draws a portrait no bigger than a portrait phone's.
+  const count = compact ? CONFIG.particles.mobile : CONFIG.particles.desktop;
+  // Each portrait stands on its own. If one photo fails to load or cannot be
+  // sampled, the other still renders, and the failed one shows its ordinary
+  // photo beside the bio (.is-photo) so the person is never left blank.
+  const prepare = async () => {
+    CONFIG.sources.forEach((src, i) => {
+      if (images[i]) return;
+      images[i] = loadImage(src);
+      images[i].catch(() => {}); // handled below, when its turn comes
     });
+    for (let i = 0; i < CONFIG.sources.length; i++) {
+      let pts = null;
+      try {
+        const img = await images[i];
+        if (!alive) return;
+        pts = await sample(img, count, 17 + i, CONFIG.tone[i]);
+      } catch {
+        images[i] = null;
+      }
+      if (!alive) return;
+      portraits[i] = pts?.length ? { pts, trig: angles(pts) } : null;
+      people[i].classList.toggle('is-photo', !portraits[i]);
+      draw();
+    }
   };
   const loader = ScrollTrigger.create({ trigger: '#services', start: 'top bottom', once: true, onEnter: prepare });
 
@@ -252,7 +281,8 @@ export function animate({ motion, small, compact }) {
   return () => {
     loader.kill();
     if (portraitTimeline === tl) portraitTimeline = null;
-    enabled = false;
+    alive = false;
+    people.forEach((p) => p.classList.remove('is-photo'));
     ScrollTrigger.removeEventListener('refresh', onRefresh);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   };

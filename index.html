@@ -10,12 +10,13 @@
   <meta name="theme-color" content="#e9e9ea">
   <link rel="icon" href="assets/logo/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="assets/logo/apple-touch-icon.png">
-  <!-- Link previews. og:image must be an absolute URL once the site has its domain (README, Not done yet). -->
+  <!-- Link previews. Crawlers need an absolute image URL, so og:image carries the production domain. -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="RedRiver Creative Media">
   <meta property="og:title" content="RedRiver Creative Media">
   <meta property="og:description" content="Documentary and video production studio in The Woodlands, Texas. Documentaries, family legacy films, and commissioned work.">
-  <meta property="og:image" content="assets/share-card.jpg">
+  <meta property="og:url" content="https://redrivercreativemedia.com/">
+  <meta property="og:image" content="https://redrivercreativemedia.com/assets/share-card.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="RedRiver Creative Media logo: Media for good and media for all">
@@ -27,8 +28,7 @@
        Bree Serif = the header wordmark (one weight, 400).
        Only the weights the CSS uses. Cedarville is cut down to the letters of
        the three Process words (talk, prepare and film, edit and deliver); if
-       those words change, update the text= list (tools/worker/sanity.mjs
-       checks that every letter is covered). -->
+       those words change, update the text= list. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=IBM+Plex+Mono&family=Inter:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,800;0,900;1,400&display=swap">
@@ -68,7 +68,7 @@
   <link rel="modulepreload" href="js/scenes/people.js">
   <link rel="modulepreload" href="js/scenes/scrawl.js">
   <link rel="modulepreload" href="js/scenes/contact.js">
-  <!-- Without JavaScript the form cannot send yet (no delivery service), so hide the button. -->
+  <!-- The form sends through JavaScript (js/scenes/contact.js), so without it hide the button. -->
   <noscript><style>.contact__send { display: none !important; }</style></noscript>
 </head>
 <body>
@@ -354,10 +354,11 @@
     <section class="contact" id="contact" data-label="06 Contact" aria-labelledby="contact-title" tabindex="-1">
       <div class="contact__inner">
         <h2 id="contact-title" class="contact__title">contact us</h2>
-        <!-- Not connected to any email service yet. See js/scenes/contact.js.
+        <!-- Netlify Forms: data-netlify registers this form at deploy time, and
+             js/scenes/contact.js posts to it. "company" is the honeypot field.
              Markup starts open; contact.js switches it to the blank "idle" stage.
              Without JavaScript, Send is hidden and native submission is blocked. -->
-        <form class="contact__form" method="post" data-stage="typing" data-ready="true" novalidate>
+        <form class="contact__form" name="contact" method="post" data-netlify="true" netlify-honeypot="company" data-stage="typing" data-ready="true" novalidate>
           <span class="contact__cursor" aria-hidden="true"></span>
           <div class="contact__field contact__field--email">
             <label for="c-email">email</label>
@@ -386,8 +387,10 @@
 
   </main>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- GSAP 3.12.5 and ScrollTrigger, served from this site. The integrity values are the
+       published 3.12.5 hashes, so a changed or corrupted file will not run. -->
+  <script src="js/vendor/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"></script>
+  <script src="js/vendor/ScrollTrigger.min.js" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d"></script>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>

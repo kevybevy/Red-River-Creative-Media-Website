@@ -221,16 +221,6 @@ a { color: inherit; }
 /* --------------------------------------------------------------------------
    Portfolio index
    -------------------------------------------------------------------------- */
-.reel { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--paper); }
-.reel img {
-  width: 100%; height: 100%; object-fit: cover;
-  filter: saturate(0.75) brightness(0.84) contrast(1.06);
-  -webkit-mask-image: radial-gradient(circle, #000 1.35px, transparent 1.65px);
-  mask-image: radial-gradient(circle, #000 1.35px, transparent 1.65px);
-  -webkit-mask-size: 3.5px 3.5px;
-  mask-size: 3.5px 3.5px;
-}
-
 .films { margin-top: clamp(56px, 9vw, 104px); border-top: 1px solid var(--rule-strong); }
 .film-row {
   display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: clamp(28px, 6vw, 72px);

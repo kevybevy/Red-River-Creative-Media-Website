@@ -1,0 +1,20 @@
+# Netlify configuration for the RedRiver site.
+#
+# The site is plain files with no build step. The command only copies the
+# pages and their assets into dist/, so tools/, serve.py and README.md are
+# not published.
+[build]
+  command = "rm -rf dist && mkdir dist && cp -r index.html css js assets blog portfolio dist/"
+  publish = "dist"
+
+# Response headers Netlify does not send by default. The page-level content
+# policy stays in each page's <meta> tag (tools/subpages/security.py writes it);
+# frame-ancestors can only be set here, in a header.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "frame-ancestors 'none'"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
