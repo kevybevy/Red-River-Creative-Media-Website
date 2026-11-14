@@ -4,7 +4,7 @@ Handoff for the model finishing this work. Read all of it before changing anythi
 
 ## Goal
 
-The owner connects this repository to Netlify later this week. By then `main` must hold a site that deploys as is, with a contact form that delivers email. That is the whole goal. Nothing in this plan matters more than getting there.
+Get `main` to a state that deploys on Netlify as is, with a contact form that will deliver email once Netlify is connected. Connecting Netlify is not part of this pass; the owner does it later. This pass ends when the pull request is open and verified.
 
 ## How to treat the reviews
 
@@ -103,7 +103,7 @@ Optional, only if time allows: `node tools/checks/perf.mjs http://localhost:8201
 2. Open a PR from `claude/gracious-allen-ltsj80` into `main`. There is no PR template. Describe what changed, what was verified and how, the one visible change (landscape portraits), and the owner's Netlify steps from Step 3.
 3. Do not merge. The owner merges.
 
-## Step 3: owner's Netlify steps (put these in the PR description)
+## Step 3: owner's Netlify steps, for later (put these in the PR description)
 
 1. Merge the PR.
 2. In Netlify, add a new site from this GitHub repository, branch `main`. Build command and publish directory come from `netlify.toml`; leave the dashboard fields empty.
@@ -113,7 +113,7 @@ Optional, only if time allows: `node tools/checks/perf.mjs http://localhost:8201
 6. On the live site, send a real test message and confirm the email arrives. Check the spam folder on the first one.
 7. Open the site on an iPhone and an Android phone and scroll the whole homepage once. No review tested real devices or Safari.
 
-## Step 4: after the first deploy, if a session is available
+## Step 4: after the first deploy, in a later pass
 
 - `curl -sI https://redrivercreativemedia.com/` shows the five headers from `netlify.toml`.
 - `https://redrivercreativemedia.com/tools/subpages/build.py` and `/README.md` return 404.
