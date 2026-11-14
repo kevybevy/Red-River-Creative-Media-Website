@@ -65,8 +65,7 @@ if (nav) {
     }
     return { y: landing(next), section: next };
   }
-  function label(direction) {
-    const to = destination(direction);
+  function label(direction, to) {
     if (!to) return direction < 0 ? 'Beginning of page' : 'End of page';
     if (to.item !== undefined) {
       const type = to.section.id === 'work' ? 'film' : 'person';
@@ -77,11 +76,16 @@ if (nav) {
   }
   function update() {
     frame = 0;
+    // Runs on every scroll frame: measure each direction once, and touch the
+    // buttons only when what they say has changed.
     [up, down].forEach((button, n) => {
       const d = n ? 1 : -1;
-      button.setAttribute('aria-disabled', String(!destination(d)));
-      button.setAttribute('aria-label', label(d));
-      button.title = label(d);
+      const to = destination(d);
+      const off = String(!to);
+      const text = label(d, to);
+      if (button.getAttribute('aria-disabled') !== off) button.setAttribute('aria-disabled', off);
+      if (button.getAttribute('aria-label') !== text) button.setAttribute('aria-label', text);
+      if (button.title !== text) button.title = text;
     });
   }
   const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
