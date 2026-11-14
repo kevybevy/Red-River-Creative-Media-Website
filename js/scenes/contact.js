@@ -5,12 +5,13 @@
 //
 // The markup starts open (stage "typing"); build() switches it to blank "idle".
 // Without JavaScript, the page hides Send and explains that sending needs it.
-// The preview policy blocks native form submission.
+// The page's content policy blocks native form submission.
 //
-// NOT CONNECTED: submissions are not sent anywhere yet. Wire `deliver()`
-// to the chosen destination once it is decided. It must resolve to
-// { ok: true } on success; anything else (or a throw) shows a retry message
-// and keeps what the visitor wrote.
+// Delivery is Netlify Forms: `deliver()` posts the fields to the form that
+// index.html declares with data-netlify. It must resolve to { ok: true } on
+// success; anything else (or a throw) shows a retry message and keeps what
+// the visitor wrote. Away from Netlify (a local preview) the post fails, so
+// the retry message is what you see there.
 
 const section = document.querySelector('.contact');
 const form = section.querySelector('.contact__form');
@@ -33,20 +34,21 @@ function autosize() {
   message.style.height = `${message.scrollHeight}px`;
 }
 
-async function deliver(/* data */) {
-  // Placeholder until a destination is chosen (email service, form endpoint, CRM).
-  return { ok: true, preview: true };
+async function deliver({ email, message }) {
+  // The address that receives submissions is set in the Netlify dashboard
+  // (Forms, then form notifications), not in this code.
+  const res = await fetch('/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ 'form-name': form.getAttribute('name'), email, message }).toString(),
+  });
+  return { ok: res.ok };
 }
 
-function thanks(preview) {
+function thanks() {
   // Hidden fields must not retain a tall textarea's scrollable overflow.
   message.style.height = '';
   status.textContent = 'thank you. we will be in touch. ';
-  if (preview) {
-    const note = document.createElement('small');
-    note.textContent = 'Preview build: this form is not connected yet, so nothing was sent.';
-    status.appendChild(note);
-  }
 }
 
 export function build() {
@@ -106,7 +108,7 @@ export function build() {
     }
     if (!message.value.trim()) { message.focus(); return; }
     // Bots fill the hidden field. Act as if it worked and send nothing.
-    if (trap.value) { setStage('sent'); thanks(false); return; }
+    if (trap.value) { setStage('sent'); thanks(); return; }
 
     setStage('sending');
     send.disabled = true;
@@ -126,7 +128,7 @@ export function build() {
       return;
     }
     setStage('sent');
-    thanks(res.preview);
+    thanks();
     // The send button is now hidden; keep keyboard focus on the confirmation.
     status.tabIndex = -1;
     status.focus({ preventScroll: true });

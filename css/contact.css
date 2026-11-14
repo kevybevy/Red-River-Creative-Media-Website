@@ -105,7 +105,6 @@
 .contact__send:disabled { opacity: 0.5; cursor: progress; }
 
 .contact__status { margin-top: 18px; font-size: 14px; }
-.contact__status small { display: block; margin-top: 6px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--grey); }
 .contact__noscript { margin-top: 14px; color: var(--grey); }
 
 /* Honeypot: off screen for people, still in the form for bots. */

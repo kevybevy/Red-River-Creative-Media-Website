@@ -68,7 +68,7 @@
   <link rel="modulepreload" href="js/scenes/people.js">
   <link rel="modulepreload" href="js/scenes/scrawl.js">
   <link rel="modulepreload" href="js/scenes/contact.js">
-  <!-- Without JavaScript the form cannot send yet (no delivery service), so hide the button. -->
+  <!-- The form sends through JavaScript (js/scenes/contact.js), so without it hide the button. -->
   <noscript><style>.contact__send { display: none !important; }</style></noscript>
 </head>
 <body>
@@ -354,10 +354,11 @@
     <section class="contact" id="contact" data-label="06 Contact" aria-labelledby="contact-title" tabindex="-1">
       <div class="contact__inner">
         <h2 id="contact-title" class="contact__title">contact us</h2>
-        <!-- Not connected to any email service yet. See js/scenes/contact.js.
+        <!-- Netlify Forms: data-netlify registers this form at deploy time, and
+             js/scenes/contact.js posts to it. "company" is the honeypot field.
              Markup starts open; contact.js switches it to the blank "idle" stage.
              Without JavaScript, Send is hidden and native submission is blocked. -->
-        <form class="contact__form" method="post" data-stage="typing" data-ready="true" novalidate>
+        <form class="contact__form" name="contact" method="post" data-netlify="true" netlify-honeypot="company" data-stage="typing" data-ready="true" novalidate>
           <span class="contact__cursor" aria-hidden="true"></span>
           <div class="contact__field contact__field--email">
             <label for="c-email">email</label>
