@@ -205,14 +205,16 @@ function draw() {
   ctx.globalAlpha = 1;
 }
 
-export function animate({ motion, small, compact }) {
+export function animate({ motion, compact }) {
   if (!motion) return;
   let alive = true;
   resize();
 
   // Load and sample the photos only in the animated version, and only once
   // the visitor reaches Services (about two scenes ahead), not at boot.
-  const count = small ? CONFIG.particles.mobile : CONFIG.particles.desktop;
+  // Phones in either orientation get the lighter count: a landscape phone is
+  // wider than 760px but draws a portrait no bigger than a portrait phone's.
+  const count = compact ? CONFIG.particles.mobile : CONFIG.particles.desktop;
   // Each portrait stands on its own. If one photo fails to load or cannot be
   // sampled, the other still renders, and the failed one shows its ordinary
   // photo beside the bio (.is-photo) so the person is never left blank.
