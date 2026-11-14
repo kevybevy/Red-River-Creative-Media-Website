@@ -8,7 +8,7 @@ Run locally with Python 3:
 python3 serve.py
 ```
 
-Open http://localhost:8123/. Add `?motion=off` to preview reduced motion. Google Fonts and GSAP load from external services and require an internet connection.
+Open http://localhost:8123/. Add `?motion=off` to preview reduced motion. Google Fonts load from an external service and require an internet connection. GSAP 3.12.5 and ScrollTrigger are served from `js/vendor/`.
 
 The homepage is `index.html`, with styles in `css/`, scripts in `js/`, and images in `assets/`. Blog and portfolio pages are in `blog/` and `portfolio/`. Their generator and content are included in `tools/subpages/`; the checked-in HTML and CSS preserve the current working version. Review generator output before replacing those pages because the working site also contains later presentation changes.
 
