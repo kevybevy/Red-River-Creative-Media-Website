@@ -1,5 +1,5 @@
 // Global layers across the maximalist middle:
-//  - film grain gets heavier (CSS var --grain)
+//  - film grain gets heavier (CSS var --grain on the .grain layer)
 //  - "debris" (slate notes, crop marks, rules, redaction bars) multiplies.
 //    It lives in a frame around the edges of the screen. On top of that, any
 //    piece that would land on a scene's copy is measured and hidden while that
@@ -12,6 +12,9 @@ import { rng, between, timecode } from './lib/util.js';
 
 const root = document.documentElement;
 const debris = document.querySelector('.debris');
+// --grain is set on the grain layer itself. On <html> every change would restyle
+// the whole page on each scroll frame, because custom properties inherit.
+const grain = document.querySelector('.grain');
 const field = debris.querySelector('.debris__field');
 const tcEl = debris.querySelector('[data-hud-tc]');
 const labelEl = debris.querySelector('[data-hud-label]');
@@ -147,8 +150,8 @@ export function animate({ motion, small }) {
     },
   });
   tl.fromTo(debris, { opacity: 0 }, { opacity: 1, duration: 0.03 }, 0)
-    .fromTo(root, { '--grain': 0.07 }, { '--grain': 0.2, duration: 0.7, ease: 'none' }, 0)
-    .to(root, { '--grain': 0, duration: 0.04 }, 0.96)
+    .fromTo(grain, { '--grain': 0.07 }, { '--grain': 0.2, duration: 0.7, ease: 'none' }, 0)
+    .to(grain, { '--grain': 0, duration: 0.04 }, 0.96)
     .to(debris, { opacity: 0, duration: 0.02 }, 0.98);
   frags.forEach((el) => {
     const t = +el.dataset.t;
