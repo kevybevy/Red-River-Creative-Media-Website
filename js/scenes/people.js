@@ -187,8 +187,6 @@ function draw() {
   ctx.globalAlpha = 1;
 }
 
-export function build() {}
-
 export function animate({ motion, small, compact }) {
   if (!motion) return;
   enabled = true;

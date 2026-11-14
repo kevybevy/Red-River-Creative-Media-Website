@@ -123,7 +123,6 @@ export function animate({ motion, compact }) {
   // Print-in: opener image under a scan line, then kicker, title, lede, rule.
   gsap.timeline({ scrollTrigger: { trigger: section, start: 'top top', end: () => '+=' + hold(), scrub: 0.5, invalidateOnRefresh: true } })
     .fromTo('.collage__index', { '--print': '22%', '--scan': 1 }, { '--print': '100%', '--scan': 0, duration: 0.5, ease: 'none' }, 0)
-    .fromTo('.collage__intro .kicker', { opacity: 1 }, { opacity: 1, duration: 0.01 }, 0)
     .fromTo('.collage__intro h2', { opacity: 0.25, y: 18 }, { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 0)
     .fromTo('.collage__lede', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 0.3)
     .fromTo('.collage__rule', { scaleY: 0, transformOrigin: 'top' }, { scaleY: 1, duration: 0.2 }, 0.35)
@@ -167,7 +166,7 @@ export function animate({ motion, compact }) {
   });
 
   // Load every poster as soon as Work is near, not when each one slides on screen.
-  const eager = ScrollTrigger.create({
+  ScrollTrigger.create({
     trigger: section, start: 'top bottom', once: true,
     onEnter: () => section.querySelectorAll('img[loading="lazy"]').forEach((img) => { img.loading = 'eager'; }),
   });

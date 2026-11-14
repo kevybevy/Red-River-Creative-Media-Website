@@ -128,8 +128,6 @@ function markOverlaps(frags) {
   });
 }
 
-export function build() {}
-
 export function animate({ motion, small }) {
   if (!motion) { field.textContent = ''; return; }
   const short = small || window.innerHeight < 560;
