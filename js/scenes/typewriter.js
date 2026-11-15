@@ -96,7 +96,7 @@ export function animate({ motion, small, compact }) {
   //   0 to 0.34   letters fly in and lock; rules, numbers and kicker appear
   //   0.24 to 0.39 descriptions type out (all complete by 0.39)
   //   0.40 to 0.66 CLEAN HOLD: every line complete and still, noise faded back
-  //   0.66 to 0.74 noise returns, rows glitch
+  //   0.66 to 0.76 noise returns; the rows stay still (no sideways jump)
   //   0.76 to 1.0 everything falls off the page
   tl.fromTo(chars, {
       x: (i) => into[i].x * vw(), y: (i) => into[i].y * vh(), rotate: (i) => into[i].rot, opacity: (i) => into[i].o,
@@ -111,11 +111,6 @@ export function animate({ motion, small, compact }) {
     .to(frags, { x: (i) => jit[i], duration: 0.7, ease: 'steps(6)' }, 0)
     .to(frags, { opacity: 0.06, duration: 0.06, ease: 'steps(3)' }, 0.24)
     .to(frags, { opacity: (i) => fragO[i], duration: 0.03, ease: 'steps(2)' }, 0.66)
-    // glitch: rows jump sideways for a beat
-    .to(lis, { x: (i) => (i % 2 ? 26 : -18), duration: 0.01, ease: 'steps(1)' }, 0.68)
-    .to(lis, { x: 0, duration: 0.01, ease: 'steps(1)' }, 0.7)
-    .to(lis, { x: (i) => (i % 3 ? -40 : 32), skewX: 8, duration: 0.01, ease: 'steps(1)' }, 0.72)
-    .to(lis, { x: 0, skewX: 0, duration: 0.01, ease: 'steps(1)' }, 0.735)
     // fall apart
     .to(chars, {
       x: (i) => out[i].x * vw(), y: (i) => out[i].y * vh(), rotate: (i) => out[i].rot, opacity: 0,
