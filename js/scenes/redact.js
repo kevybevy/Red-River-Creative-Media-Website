@@ -115,5 +115,19 @@ export function animate({ motion, compact }) {
   // Mobile lands in the new unmarked hold; desktop keeps its kept-line landing.
   section._land = () => tl.scrollTrigger.start + (tl.scrollTrigger.end - tl.scrollTrigger.start) * (compact ? 0.22 / (1 + lead) : overflow ? 0.64 : 0.66);
 
-  return () => ScrollTrigger.removeEventListener('refreshInit', fit);
+  // Phones land on the clean page, so the section keys get a second stop in
+  // this scene: the redacted page with its kept lines. Without it, one press of
+  // "next" ran the whole redaction in passing and ended on the Work scene.
+  if (compact) {
+    const at = (f) => tl.scrollTrigger.start + (tl.scrollTrigger.end - tl.scrollTrigger.start) * f;
+    section._stops = () => [
+      { y: section._land(), label: 'Studio, the page' },
+      { y: at(((overflow ? 0.64 : 0.66) + lead) / (1 + lead)), label: 'Studio, redacted' },
+    ];
+  }
+
+  return () => {
+    ScrollTrigger.removeEventListener('refreshInit', fit);
+    delete section._stops;
+  };
 }

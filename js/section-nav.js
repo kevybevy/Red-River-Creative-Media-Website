@@ -43,6 +43,9 @@ if (nav) {
     });
     return best;
   }
+  // Extra reading stops inside one scene, each { y, label } (Studio on phones:
+  // the clean page, then the redacted one). Set by the scene as section._stops.
+  const stops = (s) => (typeof s._stops === 'function' ? s._stops() : null);
   function itemLanding(s, i) {
     if (typeof s._item === 'function') return clamp(s._item(i));
     return clamp(items(s)[i].getBoundingClientRect().top + scrollY - 72);
@@ -58,6 +61,14 @@ if (nav) {
         if (next >= 0 && next < list.length) return { y: itemLanding(s, next), section: s, item: next };
       }
     }
+    // The next stop inside this scene, measured from the reader or the move in flight.
+    const inner = stops(s);
+    if (inner) {
+      const y = from ? from.y : scrollY;
+      const ahead = inner.filter((p) => (direction > 0 ? p.y > y + 3 : p.y < y - 3));
+      const stop = direction > 0 ? ahead[0] : ahead[ahead.length - 1];
+      if (stop) return { y: clamp(stop.y), section: s, stop: stop.label };
+    }
     const next = scenes[i + direction];
     if (!next) return null;
     // Enter a multi-item scene from below at its final readable item.
@@ -65,10 +76,14 @@ if (nav) {
       const item = items(next).length - 1;
       return { y: itemLanding(next, item), section: next, item };
     }
+    // Enter a scene with stops from below at its last one.
+    const below = direction < 0 ? stops(next) : null;
+    if (below) return { y: clamp(below[below.length - 1].y), section: next, stop: below[below.length - 1].label };
     return { y: landing(next), section: next };
   }
   function label(direction, to) {
     if (!to) return direction < 0 ? 'Beginning of page' : 'End of page';
+    if (to.stop !== undefined) return `${direction < 0 ? 'Previous' : 'Next'}: ${to.stop}`;
     if (to.item !== undefined) {
       const type = to.section.id === 'work' ? 'film' : 'person';
       const heading = items(to.section)[to.item].querySelector('h3')?.textContent.trim();
@@ -106,7 +121,8 @@ if (nav) {
     // scene choreography. Give section moves 2.8–4.8s and item moves 1.6s.
     // Keep a soft start/stop and let the existing scroll-driven scenes render.
     const screens = Math.abs(y - from) / Math.max(1, innerHeight);
-    const duration = sameScene ? 1600 : Math.min(4800, 2800 + Math.max(0, screens - 2) * 220);
+    // A stop inside a scene plays that scene's animation, so it keeps the section pace.
+    const duration = sameScene && to.stop === undefined ? 1600 : Math.min(4800, 2800 + Math.max(0, screens - 2) * 220);
     if (!motion()) window.scrollTo({ top: y, behavior: 'instant' });
     else await new Promise(resolve => {
       const began = performance.now();
@@ -143,7 +159,7 @@ if (nav) {
     staticItem = !motion() && ['work', 'people'].includes(to.section.id)
       ? { id: to.section.id, item: to.item ?? (to.section.id === 'people' ? 0 : undefined), y: scrollY } : null;
     update();
-    const heading = to.item !== undefined ? items(to.section)[to.item]?.querySelector('h3')?.textContent : to.section.dataset.label;
+    const heading = to.stop !== undefined ? to.stop : to.item !== undefined ? items(to.section)[to.item]?.querySelector('h3')?.textContent : to.section.dataset.label;
     if (status) status.textContent = heading ? `Now showing ${heading.trim()}.` : '';
   }
   up.addEventListener('click', () => step(-1));

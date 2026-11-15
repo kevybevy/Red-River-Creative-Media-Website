@@ -139,7 +139,28 @@ for (const [name, w, h] of [['phone', 390, 844], ['landscape', 844, 390], ['smal
   };
   for (const [name, opt] of [['desktop', {}], ['phone', { w: 390, h: 844 }]]) {
     const [n, o] = [await read(NEW, opt), await read(OLD, opt)];
-    check(`Section keys: labels, titles and disabled state match the original (${name}, 10 positions)`, JSON.stringify(n) === JSON.stringify(o), n[3]);
+    // On phones the Studio scene now has a second stop (the redacted page), so the
+    // labels at the hero and Studio positions differ from the original by design.
+    const keep = (list) => (name === 'phone' ? list.slice(3) : list);
+    check(`Section keys: labels, titles and disabled state match the original (${name}, ${keep(n).length} positions)`, JSON.stringify(keep(n)) === JSON.stringify(keep(o)), n[3]);
+  }
+  { // Studio on a phone: clean page, then the redacted page, then Work
+    const { ctx, page } = await open(NEW + '/', { w: 390, h: 844 });
+    const s = await page.evaluate(() => { const st = document.getElementById('studio'); return { stops: st._stops().map((p) => Math.round(p.y)), work: Math.round(document.getElementById('work')._land()) }; });
+    await page.evaluate((y) => scrollTo(0, y), s.stops[0]); await sleep(2500);
+    const press = async (d) => { await page.click(`.section-keys [data-direction="${d}"]`); await sleep(7000); return page.evaluate(() => Math.round(scrollY)); };
+    const a = await press(1), b = await press(1), c = await press(-1), e = await press(-1);
+    check('Studio on a phone: next stops on the redacted page, then goes to Work', Math.abs(a - s.stops[1]) < 3 && Math.abs(b - s.work) < 3, `${a} then ${b}; stops ${s.stops.join(', ')}, Work ${s.work}`);
+    check('Studio on a phone: previous returns to the redacted page, then the clean page', Math.abs(c - s.stops[1]) < 3 && Math.abs(e - s.stops[0]) < 3, `${c} then ${e}`);
+    await ctx.close();
+  }
+  { // Two quick taps are both counted
+    const { ctx, page } = await open(NEW + '/', { w: 390, h: 844 });
+    await page.evaluate(() => scrollTo(0, document.getElementById('work')._item(0))); await sleep(2500);
+    await page.click('.section-keys [data-direction="1"]'); await sleep(600); await page.click('.section-keys [data-direction="1"]'); await sleep(6000);
+    const film = await page.evaluate(() => document.getElementById('work')._itemNow());
+    check('Two taps 600 ms apart advance two films', film === 2, `ended on film ${film + 1}`);
+    await ctx.close();
   }
   const { ctx, page } = await open(NEW + '/');
   const before = await page.evaluate(() => scrollY);
