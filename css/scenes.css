@@ -412,6 +412,12 @@ html:not(.is-motion) .people {
   .type__d { font-size: 12.5px; line-height: 1.28; margin-top: 2px; }
 }
 
+/* Portrait phones: the faint kicker makes the centred sheet read as sitting low,
+   and the last line crowds the HUD. A bottom margin lifts it by half its size. */
+@media (max-width: 760px) and (min-height: 621px) {
+  .is-motion .type__sheet { margin-bottom: 20px; }
+}
+
 /* Match the canvas's short-landscape portrait slot without changing type. */
 @media (min-width: 480px) and (max-width: 760px) and (max-height: 520px) and (orientation: landscape) {
   .is-motion .person { width: 54%; right: auto; }
