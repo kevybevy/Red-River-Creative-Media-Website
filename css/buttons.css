@@ -20,5 +20,9 @@
 @media(prefers-reduced-motion:reduce){.key-return{animation:none}.section-keys .key-down{transform:none}}.no-motion .key-return,html:not(.is-motion) .section-keys .key-return{animation:none}
 @media(max-width:760px){.bar__right a.link{min-height:44px}.section-keys{top:clamp(64px,58svh,calc(100svh - 64px))}}
 
+/* Between phone and wide desktop widths (tablets, landscape phones, small laptops) the
+   Services and Process sheets start at the page gutter, under the keys. Clear them. */
+@media(min-width:761px) and (max-width:1280px){.has-section-keys .type__sheet,.has-section-keys .scrawl__steps{padding-left:36px}}
+
 /* A narrow dropdown covers this gutter: do not leave a sliver of the keys clickable. */
 @media(max-width:360px){.site-menu:not([hidden]) ~ .section-keys{visibility:hidden}}
