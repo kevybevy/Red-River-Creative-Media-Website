@@ -141,7 +141,8 @@ for (const [name, w, h] of [['phone', 390, 844], ['landscape', 844, 390], ['smal
     const [n, o] = [await read(NEW, opt), await read(OLD, opt)];
     // On phones the Studio scene now has a second stop (the redacted page), so the
     // labels at the hero and Studio positions differ from the original by design.
-    const keep = (list) => (name === 'phone' ? list.slice(3) : list);
+    // That includes "previous" from the first film, which now names the redacted page.
+    const keep = (list) => (name === 'phone' ? list.slice(3).map((t) => t.replaceAll('Previous: Studio, redacted', 'Previous section: Studio')) : list);
     check(`Section keys: labels, titles and disabled state match the original (${name}, ${keep(n).length} positions)`, JSON.stringify(keep(n)) === JSON.stringify(keep(o)), n[3]);
   }
   { // Studio on a phone: clean page, then the redacted page, then Work
