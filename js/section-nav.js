@@ -8,6 +8,7 @@ if (nav) {
   const down = nav.querySelector('[data-direction="1"]');
   const status = document.getElementById('section-key-status');
   let frame = 0, moving = false, ticket = 0, staticItem = null;
+  let bound = null; // where the move in flight is going, while one is
   const maxY = () => Math.max(0, document.documentElement.scrollHeight - innerHeight);
   const clamp = y => Math.min(maxY(), Math.max(0, y));
   const motion = () => root.classList.contains('is-motion') && !matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -46,10 +47,11 @@ if (nav) {
     if (typeof s._item === 'function') return clamp(s._item(i));
     return clamp(items(s)[i].getBoundingClientRect().top + scrollY - 72);
   }
-  function destination(direction) {
-    const i = current(), s = scenes[i];
+  // From where the reader is, or (a tap during a move) from where that move is going.
+  function destination(direction, from) {
+    const i = from ? scenes.indexOf(from.section) : current(), s = scenes[i];
     if (s.id === 'work' || s.id === 'people') {
-      const list = items(s), now = itemNow(s);
+      const list = items(s), now = from ? from.item : itemNow(s);
       if (now === undefined && direction > 0) return { y: itemLanding(s, 0), section: s, item: 0 };
       if (now !== undefined) {
         const next = now + direction;
@@ -89,13 +91,14 @@ if (nav) {
     });
   }
   const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
-  function cancel() { ticket++; moving = false; staticItem = null; nav.removeAttribute('aria-busy'); schedule(); }
+  function cancel() { ticket++; moving = false; bound = null; staticItem = null; nav.removeAttribute('aria-busy'); schedule(); }
   async function step(direction) {
-    if (moving) return;
-    const to = destination(direction);
+    // A tap while a move is in flight is not dropped: it carries on from that
+    // move's destination, and the new ticket retires the old move.
+    const to = destination(direction, moving ? bound : undefined);
     if (!to) return;
     const own = ++ticket;
-    moving = true; nav.setAttribute('aria-busy', 'true');
+    moving = true; bound = to; nav.setAttribute('aria-busy', 'true');
     const y = clamp(to.y);
     const from = scrollY;
     const sameScene = to.section === scenes[current()];
@@ -134,7 +137,7 @@ if (nav) {
       requestAnimationFrame(poll);
     });
     if (ticket !== own) return;
-    moving = false; nav.removeAttribute('aria-busy');
+    moving = false; bound = null; nav.removeAttribute('aria-busy');
     // The static opener may share its viewport with the first poster. Keep
     // its explicit identity until the reader scrolls or presses again.
     staticItem = !motion() && ['work', 'people'].includes(to.section.id)
