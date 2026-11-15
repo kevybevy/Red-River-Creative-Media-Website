@@ -1,6 +1,6 @@
 // Momentary feedback only. This never changes the action or selected state.
 (() => {
-  const selector = '.section-keys button,.site-header__menu,.site-header__tabs a,.site-menu__list a,.site-menu__pages a,.site-menu__close,.contact__send,.contact__pages a,.bar nav a.link,.film__watch,.portfolio-blog a';
+  const selector = '.section-keys button,.site-header__menu,.site-header__tabs a,.site-menu__list a,.site-menu__pages a,.site-menu__close,.bar nav a.link,.film__watch,.portfolio-blog a';
   let pressed = null;
   const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('no-motion') || (document.querySelector('.section-keys') && !document.documentElement.classList.contains('is-motion'));
   function release() {
