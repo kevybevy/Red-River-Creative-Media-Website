@@ -22,7 +22,15 @@ Blog and portfolio pages are in `blog/` and `portfolio/`. They are generated: ed
 python3 tools/subpages/build.py
 ```
 
-The generator also rewrites the content security policy tag in `index.html`, so run it after changing any inline script or script tag on the homepage. Its output is checked in.
+The generator also rewrites the content security policy tag in `index.html`, so run it after changing any inline script or script tag on the homepage. It writes `404.html` (the page-not-found page), `robots.txt` and `sitemap.xml` at the site root too. Its output is checked in.
+
+Link-preview pictures and the browser icons are drawn by a second script:
+
+```sh
+python3 tools/subpages/share_cards.py
+```
+
+It writes one 1200 x 630 picture per blog post and project into `blog/share/` and `portfolio/share/`, the homepage picture `assets/share-card.jpg`, and the icons in `assets/logo/`. Run it when a title, post or project changes, then run `build.py`. The four films use a photograph with a slight grain, cropped clear of any burnt-in web address, logo or name caption. Every other page gets a drawn scene, and the homepage is the logo alone. The headline and the line under it for each page are in `SHARE` in `build.py`. It needs a Mac with Google Chrome and Pillow (`pip install pillow`); the pictures are checked in.
 
 ## Hosting on Netlify
 
@@ -35,4 +43,6 @@ The contact form uses Netlify Forms. After the first deploy:
 3. Add an email notification for that form with the address that should receive messages. The address is set there, not in the code.
 4. Send a test message from the deployed site.
 
-Link previews use `https://redrivercreativemedia.com/assets/share-card.jpg` (`og:image` in `index.html`). Update it if the domain changes.
+Link previews, `robots.txt` and `sitemap.xml` use the full address `https://redrivercreativemedia.com`. If the domain changes, update `DOMAIN` in `tools/subpages/build.py` and the `og:url` and `og:image` tags in `index.html`, then run `build.py`.
+
+Netlify shows `404.html` for any address that does not exist.

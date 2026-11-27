@@ -42,8 +42,30 @@
 .is-motion .hero__mark { animation: mark-spin 24s linear infinite; }
 @keyframes mark-spin { to { transform: rotate(360deg); } }
 
-.hero__logo { width: clamp(250px, 30vw, 440px); }
-.hero__logo img { width: 100%; height: auto; }
+/* Logo lockup: live Bree Serif wordmark (same face as the header), tagline under it. */
+.hero__logo { font-size: clamp(36px, 4.3vw, 64px); font-weight: 400; line-height: 1; }
+.hero__lockup { display: inline-flex; flex-direction: column; align-items: flex-start; }
+.hero__word {
+  font-family: "Bree Serif", Georgia, serif;
+  font-weight: 400;
+  font-style: normal;
+  font-synthesis: none;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: var(--ink);
+}
+.hero__word-rr { position: relative; display: inline-block; }
+.hero__word-red { color: var(--red); }
+.hero__tag {
+  margin-top: 0.22em;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.3em;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: #2b2a2e;
+  white-space: nowrap;
+}
 
 .hero__line {
   max-width: 32ch;
@@ -137,7 +159,7 @@
 @media (max-width: 760px) {
   .hero__center { padding-top: clamp(80px, 15svh, 140px); }
   .hero__mark { margin-bottom: 7svh; }
-  .hero__logo { width: min(80vw, 340px); }
+  .hero__logo { font-size: min(12.4vw, 54px); }
   .hero__line { font-size: 14px; max-width: 28ch; }
   .hero__meta { width: min(80vw, 300px); }
   .hero__credits div { gap: 10px; }
@@ -163,10 +185,10 @@
 .hero__logo { position: relative; }
 .logo-redact {
   position: absolute;
-  left: -2%;
-  top: -6%;
-  width: 62.6%;
-  height: 70%;
+  left: -3%;
+  top: 2%;
+  width: 106%;
+  height: 100%;
   display: none;
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -181,7 +203,7 @@
   .hero { min-height: 0; }
   .hero__center { padding-top: 54px; }
   .hero__mark, .hero__credits { display: none; }
-  .hero__logo { width: min(46vw, 300px); }
+  .hero__logo { font-size: min(7.4vw, 46px); }
   .hero__line { margin-top: 8px; }
   .hero__meta { margin-top: 12px; }
   .hero__rec { margin-top: 12px; }

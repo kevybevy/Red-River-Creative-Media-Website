@@ -27,7 +27,7 @@ export function build() {
   logoBar.className = 'logo-redact';
   logoBar.setAttribute('aria-hidden', 'true');
   logoBar.style.backgroundImage = marker(3, { rough: 0.9 });
-  q('.hero__logo').appendChild(logoBar);
+  q('.hero__word-rr').appendChild(logoBar);
 }
 
 export function animate({ motion, compact }) {
@@ -47,7 +47,7 @@ export function animate({ motion, compact }) {
   intro
     .from('.hero__sky', { opacity: 0, duration: 1.1, ease: 'none' })
     .from('.hero__mark', { opacity: 0, scale: 0.5, duration: 0.9 }, 0.1)
-    .from('.hero__logo img', { opacity: 0, y: 12, filter: 'blur(10px)', duration: 1.1 }, 0.2)
+    .from('.hero__lockup', { opacity: 0, y: 12, filter: 'blur(10px)', duration: 1.1 }, 0.2)
     .from('.hero__line', { opacity: 0, y: 8, duration: 0.8 }, 0.45)
     .from('.set-camera, .set-chair', { opacity: 0, y: 40, duration: 1.1, stagger: 0.15 }, 0.35)
     .from(['.hero__rec', '.hero__cue'], { opacity: 0, duration: 0.6, stagger: 0.1 }, 0.8);

@@ -6,7 +6,11 @@
 Writes blog/index.html, blog/<post>/index.html, portfolio/index.html and
 portfolio/<film>/index.html, and copies common.css, motion.js and js/links.js
 into both folders, so each folder stands alone (ready for its own subdomain).
+Also writes 404.html, robots.txt and sitemap.xml at the site root.
 Edit content.py, common.css or motion.js here, then run this again.
+
+Link-preview pictures (blog/share/, portfolio/share/) are made separately by
+share_cards.py; run it when a title, post or film changes.
 """
 import html
 import sys
@@ -27,6 +31,57 @@ PORT = SITE / "portfolio"
 FONTS = ("https://fonts.googleapis.com/css2?family=Bree+Serif&family=IBM+Plex+Mono"
          "&family=Inter:wght@400;500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap")
 
+# The live address. Link previews (og:url, og:image), robots.txt and sitemap.xml
+# need full URLs. index.html carries the same address in its own og: tags.
+DOMAIN = "https://redrivercreativemedia.com"
+
+# What shows when a page's link is shared: the headline, the line under it, and
+# a description of its picture (drawn by share_cards.py). Keyed by the page's folder.
+SHARE = {
+    "blog": ("Notes for families on making a legacy film, from the first call to the files you keep",
+             "Plain answers from RedRiver Creative Media, from the first conversation to the files you keep.",
+             "A drawing of a film camera facing an armchair and a floor lamp."),
+    "what-a-family-legacy-film-is": ("What a family legacy film is: a private film of one life, kept by your family",
+             "It runs about an hour and can start as one sitting. Notes for families from RedRiver Creative Media.",
+             "A drawing of a film camera facing an armchair and a floor lamp."),
+    "what-happens-on-the-first-call": ("What happens on the first call: an hour to see if we are the right studio for your story",
+             "You tell us the story. We listen. Nothing is owed after the first call.",
+             "A drawing of a director's chair beside a telephone on a small table."),
+    "what-goes-into-a-film-budget": ("What goes into a film budget: no set price, built to what you want",
+             "A family legacy film does not have a set price. We build it to what you want, and keep the scope tied to the money.",
+             "A drawing of a director's chair at a table with papers and a desk lamp."),
+    "what-a-shoot-day-looks-like": ("What a shoot day looks like: three or four hours, a microphone and a conversation",
+             "For a bare sitting we are there with you three or four hours at most. If you want the questions ahead of time, we will send them.",
+             "A drawing of a film camera, a director's chair and a light on a stand."),
+    "releases-and-permissions": ("Releases and permissions: the paperwork for a family legacy film",
+             "The contract is signed and the deposit is in before we arrive. Anyone who appears on camera signs a release before we roll.",
+             "A drawing of a director's chair at a table with a clipboard and a pen."),
+    "how-an-edit-comes-together": ("How an edit comes together: your cut, a few rounds of fixes and a final copy",
+             "We cut the film, then send your family a version to watch. You tell us what you would like fixed.",
+             "A drawing of a director's chair at a table with a screen."),
+    "what-you-get-at-delivery": ("What you get at delivery: two files, and a film that stays with your family",
+             "Two files: a master at the highest quality, and a compressed version that is easier to pass around your family.",
+             "A drawing of a director's chair at a table with stacked film cans and a drive."),
+    "portfolio": ("The work: four documentaries and two online courses from RedRiver Creative Media",
+             "From an award-winning feature to a film in production, plus the Relationship Rescue courses.",
+             "A drawing of a film camera on a tripod beside a director's chair."),
+    "saving-clayton": ("Saving Clayton: an Oklahoma family's grief becomes their fight to be heard",
+             "Best Feature Documentary, Will Rogers Motion Picture Festival, 2023. A RedRiver film made in collaboration with Project Forty Six.",
+             "Saving Clayton. A stone historical marker for Wagoner, Oklahoma."),
+    "trans-oklahoma": ("Trans Oklahoma: lived accounts of transition, detransition, family relationships and Christian faith",
+             "A documentary directed by Janelle Batts. Director of photography Kevin Batts.",
+             "Trans Oklahoma. A city skyline with historic towers and a glass high-rise."),
+    "oasis-in-atlanta": ("Oasis in Atlanta: a pastor, his son and a family archive of Atlanta's civil rights years",
+             "A documentary on faith and school desegregation, built from recorded family testimony, photographs and saved papers.",
+             "Oasis in Atlanta. Norman Shands in an older recorded interview."),
+    "sacrificing-lincoln": ("Sacrificing Lincoln: one family's separation and a journalist's investigation into child welfare",
+             "In production. Directed by Kevin Batts and Katy Smith. Story producer Janelle Batts.",
+             "Sacrificing Lincoln. A child silhouetted in a lit doorway at the end of a dark corridor."),
+    "relationship-rescue": ("Relationship Rescue: two online courses with Patrick and Maddie Martinez, filmed by RedRiver",
+             "Teaching and podcast-style conversations. RedRiver handled filming, lighting, sound, editing, graphics and captions.",
+             "A drawing of two director's chairs at a table with two microphones."),
+}
+
 e = html.escape
 
 
@@ -46,7 +101,9 @@ def rise(text, start=0):
     return " ".join(out)
 
 
-def page(*, title, desc, depth, section, body, progress=False, og_type="website"):
+def page(*, title, desc, depth, section, body, path, share, progress=False, og_type="website"):
+    """path: this page's address under the site root. share: its picture in <section>/share/."""
+    og_title, og_desc, share_alt = SHARE[path.rstrip("/").split("/")[-1]]
     up = "../" * depth                      # to the folder root (blog/ or portfolio/)
     home = "../" * (depth + 1)              # to the main site
     other = "portfolio" if section == "blog" else "blog"
@@ -64,8 +121,14 @@ def page(*, title, desc, depth, section, body, progress=False, og_type="website"
   <meta name="theme-color" content="#f2f0eb">
   <meta property="og:type" content="{og_type}">
   <meta property="og:site_name" content="RedRiver Creative Media">
-  <meta property="og:title" content="{e(title)}">
-  <meta property="og:description" content="{e(desc)}">
+  <meta property="og:title" content="{e(og_title)}">
+  <meta property="og:description" content="{e(og_desc)}">
+  <meta property="og:url" content="{DOMAIN}/{path}">
+  <meta property="og:image" content="{DOMAIN}/{section}/share/{share}.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{e(share_alt)}">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="{up}favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="{up}apple-touch-icon.png">
   <!-- One motion policy with the main page: ?motion=off, the main page's
@@ -158,7 +221,7 @@ def blog_index():
     </div>"""
     return page(title="Blog | RedRiver Creative Media",
                 desc=BLOG_INDEX['meta_description'],
-                depth=0, section="blog", body=body)
+                depth=0, section="blog", body=body, path="blog/", share="index")
 
 
 def blog_post(i, p):
@@ -179,7 +242,8 @@ def blog_post(i, p):
       </a>
     </article>"""
     return page(title=f"{p['title']} | RedRiver Creative Media blog", desc=p["dek"],
-                depth=1, section="blog", body=body, progress=True, og_type="article")
+                depth=1, section="blog", body=body, progress=True, og_type="article",
+                path=f"blog/{p['slug']}/", share=p["slug"])
 
 
 # ---------------------------------------------------------------------------
@@ -220,7 +284,7 @@ def portfolio_index():
     </div>"""
     return page(title="Portfolio | RedRiver Creative Media",
                 desc=PORTFOLIO_INDEX['meta_description'],
-                depth=0, section="portfolio", body=body)
+                depth=0, section="portfolio", body=body, path="portfolio/", share="index")
 
 
 def still(slug, item, lead=False):
@@ -295,7 +359,8 @@ def film_page(i, f):
       </article>
     </div>"""
     return page(title=f"{f['title']} | RedRiver Creative Media", desc=f["seo"],
-                depth=1, section="portfolio", body=body, progress=True, og_type="video.movie")
+                depth=1, section="portfolio", body=body, progress=True, og_type="video.movie",
+                path=f"portfolio/{f['slug']}/", share=f["slug"])
 
 
 def course_page():
@@ -345,7 +410,114 @@ def course_page():
       </a>
     </article>'''
     return page(title=f"{f['title']} | RedRiver Creative Media", desc=f['seo'],
-                depth=1, section='portfolio', body=body, progress=True)
+                depth=1, section='portfolio', body=body, progress=True,
+                path=f"portfolio/{f['slug']}/", share=f['slug'])
+
+
+# ---------------------------------------------------------------------------
+# Site root: page not found, robots.txt, sitemap.xml
+# ---------------------------------------------------------------------------
+def not_found():
+    """Netlify serves /404.html for any missing address, at any depth, so every
+    link and file here starts at the site root. No scripts: the page is still.
+    The jokes are about filmmaking only, never about a film's subject."""
+    return secure_html(f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page not found | RedRiver Creative Media</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#f2f0eb">
+  <link rel="icon" href="/assets/logo/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/logo/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="{FONTS}">
+  <link rel="stylesheet" href="/blog/common.css">
+  <link rel="stylesheet" href="/blog/buttons.css">
+  <style>
+    .nf__rec {{ display: inline-flex; align-items: center; gap: 0.7em; margin-bottom: 26px; padding: 0.55em 0.9em; background: var(--ink); color: #fff; }}
+    .nf__dot {{ width: 0.55em; height: 0.55em; border-radius: 50%; background: #e02020; }}
+    .nf .head__t {{ text-wrap: balance; }}
+    .nf .ask + .ask {{ margin-top: 14px; }}
+  </style>
+</head>
+<body>
+  <a class="skip-link mono" href="#main">Skip to content</a>
+  <header class="bar">
+    <a class="bar__brand" href="/">
+      <span class="wordmark" aria-hidden="true">RedRiver<span class="wordmark__red">media</span></span>
+      <span class="sr-only">RedRiver Creative Media, main site</span>
+    </a>
+    <nav class="mono" aria-label="Blog and portfolio">
+      <a class="link" href="/blog/">Blog</a>
+      <a class="link" href="/portfolio/">Portfolio</a>
+    </nav>
+    <nav class="bar__right mono" aria-label="Main site">
+      <a class="link" href="/">Main site</a>
+      <a class="link" href="/#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <div class="col nf">
+      <header class="head">
+        <p class="nf__rec mono"><span class="nf__dot" aria-hidden="true"></span>REC 00:00:04:04</p>
+        <p class="film__status mono">Scene 404 / Take 1 / Page not found</p>
+        <h1 class="head__t">This scene did not make the final cut</h1>
+        <p class="head__sub">We checked the camera card, the backup drive, and the backup of the backup. The page you asked for is not on any of them.</p>
+      </header>
+      <p class="ask">Quiet on set. Take two starts at the <a href="/">main site</a>. Or see what did make the cut in the <a href="/portfolio/">portfolio</a> and the <a href="/blog/">blog</a>.</p>
+      <p class="ask">If one of our links sent you here, that one is on us. <a href="/#contact">Tell us</a> and we will fix it in post.</p>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <div class="col col--wide">
+      <a class="bar__brand" href="/"><span class="wordmark" aria-hidden="true">RedRiver<span class="wordmark__red">media</span></span><span class="sr-only">RedRiver Creative Media, main site</span></a>
+      <p class="foot__place mono">Est. 2011 / The Woodlands, Texas</p>
+    </div>
+  </footer>
+</body>
+</html>
+""")
+
+
+def sitemap():
+    urls = [("", None), ("blog/", None)]
+    urls += [(f"blog/{p['slug']}/", p["date"]) for p in POSTS]
+    urls += [("portfolio/", None)] + [(f"portfolio/{f['slug']}/", None) for f in PROJECTS]
+    rows = "\n".join(
+        f"  <url><loc>{DOMAIN}/{path}</loc>{f'<lastmod>{date}</lastmod>' if date else ''}</url>" for path, date in urls)
+    return f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{rows}\n</urlset>\n'
+
+
+# robots.txt: the lines search engines read, under a note for whoever opens the file.
+ROBOTS = f"""# Hello, robot. You found the call sheet.
+#
+# RedRiver Creative Media makes documentaries, so nothing here is off the record.
+# Look around. Read everything. Please do not ask for a producer credit.
+#
+# If you are a person reading this, you are exactly the kind of curious we like.
+# The films:  {DOMAIN}/portfolio/
+# Say hello:  {DOMAIN}/#contact
+
+User-agent: *
+Allow: /
+
+Sitemap: {DOMAIN}/sitemap.xml
+"""
+
+
+def check_share_cards():
+    """Every page that names a link-preview picture has one on disk."""
+    wanted = [BLOG / "share" / "index.jpg", PORT / "share" / "index.jpg"]
+    wanted += [BLOG / "share" / f"{p['slug']}.jpg" for p in POSTS]
+    wanted += [PORT / "share" / f"{f['slug']}.jpg" for f in PROJECTS]
+    missing = [str(w.relative_to(SITE)) for w in wanted if not w.exists()]
+    if missing:
+        sys.exit("missing link-preview pictures (run tools/subpages/share_cards.py): " + ", ".join(missing))
 
 
 # ---------------------------------------------------------------------------
@@ -399,6 +571,8 @@ def main():
         shutil.copy(SITE / "js" / "links.js", folder / "links.js")
         shutil.copy(SITE / "css" / "buttons.css", folder / "buttons.css")
         shutil.copy(SITE / "js" / "key-feedback.js", folder / "key-feedback.js")
+        for icon in ("favicon-32.png", "apple-touch-icon.png"):
+            shutil.copy(SITE / "assets" / "logo" / icon, folder / icon)
     write(BLOG / "index.html", blog_index())
     for i, p in enumerate(POSTS):
         write(BLOG / p["slug"] / "index.html", blog_post(i, p))
@@ -406,6 +580,10 @@ def main():
     for i, f in enumerate(FILMS):
         write(PORT / f["slug"] / "index.html", film_page(i, f))
     write(PORT / COURSE['slug'] / 'index.html', course_page())
+    write(SITE / "404.html", not_found())
+    write(SITE / "sitemap.xml", sitemap())
+    write(SITE / "robots.txt", ROBOTS)
+    check_share_cards()
     print(f"blog: {len(POSTS)} posts, portfolio: {len(PROJECTS)} projects")
 
 
