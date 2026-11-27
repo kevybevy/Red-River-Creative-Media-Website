@@ -30,7 +30,7 @@ Link-preview pictures and the browser icons are drawn by a second script:
 python3 tools/subpages/share_cards.py
 ```
 
-It writes one 1200 x 630 picture per blog post and project into `blog/share/` and `portfolio/share/`, the homepage picture `assets/share-card.jpg`, and the icons in `assets/logo/`. Run it when a title, post or project changes, then run `build.py`. It needs a Mac with Google Chrome; the pictures are checked in.
+It writes one 1200 x 630 picture per blog post and project into `blog/share/` and `portfolio/share/`, the homepage picture `assets/share-card.jpg`, and the icons in `assets/logo/`. Run it when a title, post or project changes, then run `build.py`. The four films use a photograph with a slight grain, cropped clear of any burnt-in web address, logo or name caption. Every other page gets a drawn scene, and the homepage is the logo alone. The headline and the line under it for each page are in `SHARE` in `build.py`. It needs a Mac with Google Chrome and Pillow (`pip install pillow`); the pictures are checked in.
 
 ## Hosting on Netlify
 

@@ -35,12 +35,51 @@ FONTS = ("https://fonts.googleapis.com/css2?family=Bree+Serif&family=IBM+Plex+Mo
 # need full URLs. index.html carries the same address in its own og: tags.
 DOMAIN = "https://redrivercreativemedia.com"
 
-# The still behind each film's link-preview picture (see share_cards.py).
-SHARE_STILLS = {
-    "saving-clayton": "01-bill-and-lisa",
-    "trans-oklahoma": "02-laura-kitchen-interview",
-    "oasis-in-atlanta": "04-family-archive",
-    "sacrificing-lincoln": "05-water-at-sunset",
+# What shows when a page's link is shared: the headline, the line under it, and
+# a description of its picture (drawn by share_cards.py). Keyed by the page's folder.
+SHARE = {
+    "blog": ("Notes for families on making a legacy film, from the first call to the files you keep",
+             "Plain answers from RedRiver Creative Media, from the first conversation to the files you keep.",
+             "A drawing of a film camera facing an armchair and a floor lamp."),
+    "what-a-family-legacy-film-is": ("What a family legacy film is: a private film of one life, kept by your family",
+             "It runs about an hour and can start as one sitting. Notes for families from RedRiver Creative Media.",
+             "A drawing of a film camera facing an armchair and a floor lamp."),
+    "what-happens-on-the-first-call": ("What happens on the first call: an hour to see if we are the right studio for your story",
+             "You tell us the story. We listen. Nothing is owed after the first call.",
+             "A drawing of a director's chair beside a telephone on a small table."),
+    "what-goes-into-a-film-budget": ("What goes into a film budget: no set price, built to what you want",
+             "A family legacy film does not have a set price. We build it to what you want, and keep the scope tied to the money.",
+             "A drawing of a director's chair at a table with papers and a desk lamp."),
+    "what-a-shoot-day-looks-like": ("What a shoot day looks like: three or four hours, a microphone and a conversation",
+             "For a bare sitting we are there with you three or four hours at most. If you want the questions ahead of time, we will send them.",
+             "A drawing of a film camera, a director's chair and a light on a stand."),
+    "releases-and-permissions": ("Releases and permissions: the paperwork for a family legacy film",
+             "The contract is signed and the deposit is in before we arrive. Anyone who appears on camera signs a release before we roll.",
+             "A drawing of a director's chair at a table with a clipboard and a pen."),
+    "how-an-edit-comes-together": ("How an edit comes together: your cut, a few rounds of fixes and a final copy",
+             "We cut the film, then send your family a version to watch. You tell us what you would like fixed.",
+             "A drawing of a director's chair at a table with a screen."),
+    "what-you-get-at-delivery": ("What you get at delivery: two files, and a film that stays with your family",
+             "Two files: a master at the highest quality, and a compressed version that is easier to pass around your family.",
+             "A drawing of a director's chair at a table with stacked film cans and a drive."),
+    "portfolio": ("The work: four documentaries and two online courses from RedRiver Creative Media",
+             "From an award-winning feature to a film in production, plus the Relationship Rescue courses.",
+             "A drawing of a film camera on a tripod beside a director's chair."),
+    "saving-clayton": ("Saving Clayton: an Oklahoma family's grief becomes their fight to be heard",
+             "Best Feature Documentary, Will Rogers Motion Picture Festival, 2023. A RedRiver film made in collaboration with Project Forty Six.",
+             "Saving Clayton. A stone historical marker for Wagoner, Oklahoma."),
+    "trans-oklahoma": ("Trans Oklahoma: lived accounts of transition, detransition, family relationships and Christian faith",
+             "A documentary directed by Janelle Batts. Director of photography Kevin Batts.",
+             "Trans Oklahoma. A city skyline with historic towers and a glass high-rise."),
+    "oasis-in-atlanta": ("Oasis in Atlanta: a pastor, his son and a family archive of Atlanta's civil rights years",
+             "A documentary on faith and school desegregation, built from recorded family testimony, photographs and saved papers.",
+             "Oasis in Atlanta. Norman Shands in an older recorded interview."),
+    "sacrificing-lincoln": ("Sacrificing Lincoln: one family's separation and a journalist's investigation into child welfare",
+             "In production. Directed by Kevin Batts and Katy Smith. Story producer Janelle Batts.",
+             "Sacrificing Lincoln. A child silhouetted in a lit doorway at the end of a dark corridor."),
+    "relationship-rescue": ("Relationship Rescue: two online courses with Patrick and Maddie Martinez, filmed by RedRiver",
+             "Teaching and podcast-style conversations. RedRiver handled filming, lighting, sound, editing, graphics and captions.",
+             "A drawing of two director's chairs at a table with two microphones."),
 }
 
 e = html.escape
@@ -62,8 +101,9 @@ def rise(text, start=0):
     return " ".join(out)
 
 
-def page(*, title, desc, depth, section, body, path, share, share_alt, progress=False, og_type="website"):
+def page(*, title, desc, depth, section, body, path, share, progress=False, og_type="website"):
     """path: this page's address under the site root. share: its picture in <section>/share/."""
+    og_title, og_desc, share_alt = SHARE[path.rstrip("/").split("/")[-1]]
     up = "../" * depth                      # to the folder root (blog/ or portfolio/)
     home = "../" * (depth + 1)              # to the main site
     other = "portfolio" if section == "blog" else "blog"
@@ -81,8 +121,8 @@ def page(*, title, desc, depth, section, body, path, share, share_alt, progress=
   <meta name="theme-color" content="#f2f0eb">
   <meta property="og:type" content="{og_type}">
   <meta property="og:site_name" content="RedRiver Creative Media">
-  <meta property="og:title" content="{e(title)}">
-  <meta property="og:description" content="{e(desc)}">
+  <meta property="og:title" content="{e(og_title)}">
+  <meta property="og:description" content="{e(og_desc)}">
   <meta property="og:url" content="{DOMAIN}/{path}">
   <meta property="og:image" content="{DOMAIN}/{section}/share/{share}.jpg">
   <meta property="og:image:width" content="1200">
@@ -181,8 +221,7 @@ def blog_index():
     </div>"""
     return page(title="Blog | RedRiver Creative Media",
                 desc=BLOG_INDEX['meta_description'],
-                depth=0, section="blog", body=body, path="blog/", share="index",
-                share_alt="Blog. Notes for families, from RedRiver Creative Media.")
+                depth=0, section="blog", body=body, path="blog/", share="index")
 
 
 def blog_post(i, p):
@@ -204,8 +243,7 @@ def blog_post(i, p):
     </article>"""
     return page(title=f"{p['title']} | RedRiver Creative Media blog", desc=p["dek"],
                 depth=1, section="blog", body=body, progress=True, og_type="article",
-                path=f"blog/{p['slug']}/", share=p["slug"],
-                share_alt=f"{p['title']}. From the RedRiver Creative Media blog.")
+                path=f"blog/{p['slug']}/", share=p["slug"])
 
 
 # ---------------------------------------------------------------------------
@@ -246,8 +284,7 @@ def portfolio_index():
     </div>"""
     return page(title="Portfolio | RedRiver Creative Media",
                 desc=PORTFOLIO_INDEX['meta_description'],
-                depth=0, section="portfolio", body=body, path="portfolio/", share="index",
-                share_alt="Portfolio. Documentaries and courses by RedRiver Creative Media.")
+                depth=0, section="portfolio", body=body, path="portfolio/", share="index")
 
 
 def still(slug, item, lead=False):
@@ -321,11 +358,9 @@ def film_page(i, f):
         </div>
       </article>
     </div>"""
-    share_alt = next(alt for sid, _w, _h, _cap, alt in f["stills"] if sid == SHARE_STILLS[f["slug"]])
     return page(title=f"{f['title']} | RedRiver Creative Media", desc=f["seo"],
                 depth=1, section="portfolio", body=body, progress=True, og_type="video.movie",
-                path=f"portfolio/{f['slug']}/", share=f["slug"],
-                share_alt=f"{f['title']}. {share_alt}")
+                path=f"portfolio/{f['slug']}/", share=f["slug"])
 
 
 def course_page():
@@ -376,8 +411,7 @@ def course_page():
     </article>'''
     return page(title=f"{f['title']} | RedRiver Creative Media", desc=f['seo'],
                 depth=1, section='portfolio', body=body, progress=True,
-                path=f"portfolio/{f['slug']}/", share=f['slug'],
-                share_alt=f"{f['title']}. {f['alt']}")
+                path=f"portfolio/{f['slug']}/", share=f['slug'])
 
 
 # ---------------------------------------------------------------------------
