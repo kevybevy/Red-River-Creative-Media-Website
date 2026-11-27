@@ -1,0 +1,13 @@
+# Hello, robot. You found the call sheet.
+#
+# RedRiver Creative Media makes documentaries, so nothing here is off the record.
+# Look around. Read everything. Please do not ask for a producer credit.
+#
+# If you are a person reading this, you are exactly the kind of curious we like.
+# The films:  https://redrivercreativemedia.com/portfolio/
+# Say hello:  https://redrivercreativemedia.com/#contact
+
+User-agent: *
+Allow: /
+
+Sitemap: https://redrivercreativemedia.com/sitemap.xml

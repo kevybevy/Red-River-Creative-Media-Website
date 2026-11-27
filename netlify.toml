@@ -4,7 +4,7 @@
 # pages and their assets into dist/, so tools/, serve.py and README.md are
 # not published.
 [build]
-  command = "rm -rf dist && mkdir dist && cp -r index.html css js assets blog portfolio dist/"
+  command = "rm -rf dist && mkdir dist && cp -r index.html 404.html robots.txt sitemap.xml css js assets blog portfolio dist/"
   publish = "dist"
 
 # Response headers Netlify does not send by default. The page-level content
