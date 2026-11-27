@@ -236,7 +236,7 @@ main section[tabindex="-1"].is-focus-ring:focus { outline: 2px solid var(--red);
 .site-menu__motion[aria-pressed="true"] { color: var(--red); }
 .no-gsap .site-menu__motion { display: none; }
 /* Hero parts the intro animates in stay hidden until it starts (see index.html). */
-.pre-intro .hero__sky, .pre-intro .hero__mark, .pre-intro .hero__logo img, .pre-intro .hero__line,
+.pre-intro .hero__sky, .pre-intro .hero__mark, .pre-intro .hero__lockup, .pre-intro .hero__line,
 .pre-intro .set-camera, .pre-intro .set-chair, .pre-intro .hero__rec, .pre-intro .hero__cue { opacity: 0; }
 .site-menu__close { margin-top: 10px; padding: 6px 0; border: 0; background: none; color: var(--grey); cursor: pointer; }
 .site-menu__note { color: var(--grey); text-transform: none; letter-spacing: 0; }
